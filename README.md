@@ -1,11 +1,24 @@
-# Geraldin Bot
-Este bot foi feito para facilitar o envio de mensagens através do WhatsApp para parceiros Aiqfome.
+<div align="center">
+  <a href="#instalação"><b>Como Instalar</b></a> | 
+  <a href="#saiba-que"><b>Observações</b></a> | 
+  <a href="#configurações"><b>Configurações</b></a> | 
+  <a href="https://github.com/renandecarlo/geraldin-bot/discussions"><b>Comentários</b></a> | 
+  <a href="https://github.com/renandecarlo/geraldin-bot/issues"><b>Reportar problemas</b></a> | 
+  <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4CRRMFEK289A4" target="_blank">
+    <img src="https://www.paypalobjects.com/pt_BR/i/btn/btn_donate_LG.gif" />
+  </a>
+  <br /><br />
+  <img src="https://user-images.githubusercontent.com/6974980/127627282-7f157406-0bce-4d3c-ae96-c0b8795467ed.png" /><br />
+  <h1>Geraldin Bot</h1>
+  <p>Este bot foi desenvolvido para facilitar o envio de mensagens através do WhatsApp para parceiros Aiqfome.</p>
+ </div>
 
 ## Como funciona
 O bot entra no painel Geraldo e fica monitorando os novos pedidos. Caso um pedido não tenha sido visualizado por um determinado tempo pelo parceiro, o bot envia uma mensagem através do WhatsApp Web.
 
 ## Saiba que
-Você não poderá usar o WhatsApp Web em outro lugar (para aquele número de telefone) enquanto o bot está aberto. Caso isso seja um problema, recomendo o uso de um novo número de telefone específico para o bot.
+
+Você não poderá usar o WhatsApp Web em outro lugar (com o mesmo número) enquanto o bot está aberto. Caso isso seja um problema, o uso de um número de telefone específico para o bot é recomendado.
 
 O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você precisará manter o computador e o celular conectados na internet.
 
