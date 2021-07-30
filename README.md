@@ -12,7 +12,9 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 ## Instalação
 ### Modo fácil
 1. Clique aqui para fazer o download do programa e descompacte o arquivo.
-2. 6. Abra o arquivo `.env.ini` no Bloco de Notas ou WordPad e altere as configurações necessárias
+2. Abra o arquivo `.env.ini` no Bloco de Notas ou WordPad e altere as configurações necessárias
+3. Execute o arquivo `geraldin-bot.exe`
+4. Pronto!
 ### Para desenvolvedores
 1. Instale o [NodeJS](https://nodejs.dev/)
 2. Clone este repositório ou faça o download da pasta [clicando aqui](https://github.com/renandecarlo/geraldin-bot/archive/refs/heads/main.zip)
