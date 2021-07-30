@@ -26,6 +26,6 @@
     "start": "npm-run-all -r --parallel geraldo whatsapp",
     "prebuild": "rm -rf ./dist",
     "build": "pkg . -C brotli",
-    "postbuild": "cp geraldo-listener.js whatsapp-bot.js package.json .env.ini.example ./dist && mv ./dist/.env.ini.example ./dist/.env.ini"
+    "postbuild": "cp geraldo-listener.js whatsapp-bot.js package.json .env.ini.example README.md ./dist && mv ./dist/.env.ini.example ./dist/.env.ini"
   }
 }
