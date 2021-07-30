@@ -10,14 +10,14 @@
   <h1>Geraldin Bot</h1>
  </div>
  
- Este bot foi desenvolvido para facilitar o envio de mensagens através do WhatsApp para parceiros Aiqfome.
+ Este bot foi desenvolvido para automatizar o envio de mensagens através do WhatsApp para parceiros Aiqfome.
  > Atenção: este programa está em fase de testes, use com cautela.
 
 <br />
 
 
 ## Como funciona
-O bot entra no painel Geraldo e fica monitorando os novos pedidos. Caso um pedido não tenha sido visualizado por um determinado tempo pelo parceiro, o bot envia uma mensagem através do WhatsApp Web.
+O bot, de forma autônoma, entra no painel Geraldo e fica monitorando os novos pedidos. Caso um pedido não tenha sido visualizado por um determinado tempo pelo parceiro, o bot envia uma mensagem através do WhatsApp Web.
 
 ## Saiba que
 
