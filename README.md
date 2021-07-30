@@ -4,7 +4,7 @@
   <a href="#configurações"><b>Configurações</b></a> | 
   <a href="https://github.com/renandecarlo/geraldin-bot/discussions"><b>Comentários</b></a> | 
   <a href="https://github.com/renandecarlo/geraldin-bot/issues"><b>Reportar problemas</b></a> | 
-  <a href="#doar"><b>Doar</b></a>
+  <a href="#contribuições"><b>Doar</b></a>
   <br /><br />
   <img src="https://user-images.githubusercontent.com/6974980/127627282-7f157406-0bce-4d3c-ae96-c0b8795467ed.png" /><br />
   <h1>Geraldin Bot</h1>
