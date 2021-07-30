@@ -4,14 +4,14 @@
   <a href="#configurações"><b>Configurações</b></a> | 
   <a href="https://github.com/renandecarlo/geraldin-bot/discussions"><b>Comentários</b></a> | 
   <a href="https://github.com/renandecarlo/geraldin-bot/issues"><b>Reportar problemas</b></a> | 
-  <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4CRRMFEK289A4" target="_blank">
-    <img src="https://www.paypalobjects.com/pt_BR/i/btn/btn_donate_LG.gif" />
-  </a>
+  <a href="#doar"><b>Doar</b></a>
   <br /><br />
   <img src="https://user-images.githubusercontent.com/6974980/127627282-7f157406-0bce-4d3c-ae96-c0b8795467ed.png" /><br />
   <h1>Geraldin Bot</h1>
   <p>Este bot foi desenvolvido para facilitar o envio de mensagens através do WhatsApp para parceiros Aiqfome.</p>
  </div>
+ <br /><br />
+
 
 ## Como funciona
 O bot entra no painel Geraldo e fica monitorando os novos pedidos. Caso um pedido não tenha sido visualizado por um determinado tempo pelo parceiro, o bot envia uma mensagem através do WhatsApp Web.
@@ -50,6 +50,14 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 | **MOSTRAR_NAVEGADOR_WHATSAPP** | Mostrar o navegador do WhatsApp Web. | `0 = navegador fica invisível`, `1 = navegador visível`|
 
 
-
 ## Dependências
 Este projeto usa o [puppeteer](https://github.com/puppeteer/puppeteer) para monitorar o Geraldo, e o [venom](https://github.com/orkestral/venom) para gerenciar o WhatsApp Web.
+
+<br /><br />
+
+## Contribuições
+Gostou do projeto? Considere fazer uma contribuição! ❤️
+
+<a href="https://picpay.me/renandecarlo" target="_blank">
+  <img src="https://user-images.githubusercontent.com/6974980/127633110-839b2ec2-e485-4b22-8eeb-59d133d6dc0f.png" width="128" />
+</a>
