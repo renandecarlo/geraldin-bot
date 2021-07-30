@@ -1,8 +1,6 @@
-# custom env
 .env.ini
-
-# venom
 tokens/
+test/
 
 # Logs
 logs
