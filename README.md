@@ -10,14 +10,14 @@
   <h1>Geraldin Bot</h1>
  </div>
  
- Este bot foi desenvolvido para facilitar o envio de mensagens através do WhatsApp para parceiros Aiqfome.
+ Este bot foi desenvolvido para automatizar o envio de mensagens através do WhatsApp para parceiros Aiqfome.
  > Atenção: este programa está em fase de testes, use com cautela.
 
 <br />
 
 
 ## Como funciona
-O bot entra no painel Geraldo e fica monitorando os novos pedidos. Caso um pedido não tenha sido visualizado por um determinado tempo pelo parceiro, o bot envia uma mensagem através do WhatsApp Web.
+O bot, de forma autônoma, entra no painel Geraldo e fica monitorando os novos pedidos. Caso um pedido não tenha sido visualizado por um determinado tempo pelo parceiro, o bot envia uma mensagem através do WhatsApp Web.
 
 ## Saiba que
 
@@ -52,6 +52,7 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 | **ESPERA_ENTRE_MSG** | Quanto tempo *(em minutos)* esperar para enviar outra mensagem, caso o pedido ainda não tenha sido lido. | Ex: `2`, `4`, `6` (minutos)|
 | **LIMITE_DE_MSGS** | Limitar a quantidade de mensagens enviadas. | `0 = ilimitado`, `1 = envia só a primeira mensagem`, `2 = 2 msgs`..|
 | **MOSTRAR_NAVEGADOR_WHATSAPP** | Mostrar o navegador do WhatsApp Web. | `0 = navegador fica invisível`, `1 = navegador visível`|
+| **MOSTRAR_NAVEGADOR_GERALDO** | Mostrar o navegador do Geraldo. | `0 = navegador fica invisível`, `1 = navegador visível`|
 
 
 ## Dependências
