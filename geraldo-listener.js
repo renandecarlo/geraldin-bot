@@ -10,7 +10,7 @@ const config = {
     waitFor:            process.env.ESPERA_PRIMEIRA_MSG,
     waitForBetween:     process.env.ESPERA_ENTRE_MSG,
     maxMsgs:            process.env.LIMITE_DE_MSGS,
-    headless:           process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true
+    headless:           process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true
 };
 
 (async () => {
