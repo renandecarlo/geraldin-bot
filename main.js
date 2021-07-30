@@ -1,9 +1,4 @@
-const runAll = require("npm-run-all");
+const process = require('child_process');
 
-runAll(["whatsapp", "geraldo"], {parallel: true, race: true})
-    .then(() => {
-        console.log("Done!");
-    })
-    .catch(err => {
-        console.log(err);
-    });
+process.fork('./whatsapp-bot.js');
+process.fork('./geraldo-listener.js');
