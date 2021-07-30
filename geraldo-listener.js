@@ -1,5 +1,7 @@
 const dotenv = require('dotenv').config({ path: './.env.ini' });
+
 const puppeteer = require('puppeteer');
+const ChromeLauncher = require('chrome-launcher');
 
 const io = require('socket.io-client');
 const socket = io('ws://localhost:3000');
@@ -15,10 +17,12 @@ const config = {
 
 (async () => {
     /* Set up browser */
+    const chromePath = ChromeLauncher.Launcher.getInstallations()[0];
     const browser = await puppeteer.launch({ 
         defaultViewport: null,
         headless: config.headless,
-        args: ['--mute-audio']
+        args: ['--mute-audio'],
+        executablePath: chromePath
     });
     const page = await browser.newPage();
 
