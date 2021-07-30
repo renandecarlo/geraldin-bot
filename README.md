@@ -29,12 +29,12 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 ## Configurações
 | config | descrição | opções |
 |--|--|--|
-| **USUARIO** | Seu usuário/email do Geraldo | Ex: `teste@aiqfome.com.br`
-| **SENHA** | Sua senha do Geraldo | Ex: `12345`
-| **ESPERA_PRIMEIRA_MSG** | Aguardar quanto tempo *(em minutos)* para enviar a mensagem depois do pedido chegar. | Ex: `1`, `3`, `5` (minutos)
-| **ESPERA_ENTRE_MSG** | Quanto tempo *(em minutos)* esperar para enviar outra mensagem, caso o pedido ainda não tenha sido lido. | Ex: `2`, `4`, `6` (minutos)
-| **LIMITE_DE_MSGS** | Limitar a quantidade de mensagens enviadas. | `0 = ilimitado`, `1 = envia só a primeira mensagem`, `2 = 2 msgs`..
-| **MOSTRAR_NAVEGADOR_WHATSAPP** | Mostrar o navegador do WhatsApp Web. | `0 = navegador fica invisível`, `1 = navegador visível
+| **USUARIO** | Seu usuário/email do Geraldo | Ex: `teste@aiqfome.com.br`|
+| **SENHA** | Sua senha do Geraldo | Ex: `12345`|
+| **ESPERA_PRIMEIRA_MSG** | Aguardar quanto tempo *(em minutos)* para enviar a mensagem depois do pedido chegar. | Ex: `1`, `3`, `5` (minutos)|
+| **ESPERA_ENTRE_MSG** | Quanto tempo *(em minutos)* esperar para enviar outra mensagem, caso o pedido ainda não tenha sido lido. | Ex: `2`, `4`, `6` (minutos)|
+| **LIMITE_DE_MSGS** | Limitar a quantidade de mensagens enviadas. | `0 = ilimitado`, `1 = envia só a primeira mensagem`, `2 = 2 msgs`..|
+| **MOSTRAR_NAVEGADOR_WHATSAPP** | Mostrar o navegador do WhatsApp Web. | `0 = navegador fica invisível`, `1 = navegador visível`|
 
 
 
