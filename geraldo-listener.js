@@ -7,9 +7,9 @@ const socket = io('ws://localhost:3000');
 const config = {
     user:               process.env.USUARIO,
     password:           process.env.SENHA,
-    waitFor:            process.env.ESPERA_PRIMEIRA_MSG,
-    waitForBetween:     process.env.ESPERA_ENTRE_MSG,
-    maxMsgs:            process.env.LIMITE_DE_MSGS,
+    waitFor:            process.env.ESPERA_PRIMEIRA_MSG * 60 * 1000,
+    waitForBetween:     process.env.ESPERA_ENTRE_MSG * 60 * 1000,
+    maxMsgs:            parseInt(process.env.LIMITE_DE_MSGS),
     headless:           process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true
 };
 
@@ -95,15 +95,20 @@ const config = {
     const checkOrder = order => {
 
         if(Date.now() - Date.parse(order.created) > config.waitFor)
-            if(!config.maxMsgs || sentMessagesCount[order.id] < config.maxMsgs) /* Check if enough messages have been sent */
+            if(!config.maxMsgs || !sentMessagesCount[order.id] || sentMessagesCount[order.id] < config.maxMsgs) { /* Check if enough messages have been sent */
                 if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
                     console.log('-> Order is waiting for too long. Sending message');
 
                     sendMessage(order);
 
                     sentMessagesDate[order.id] = Date.now();
+
+                    if(!sentMessagesCount[order.id])
+                        sentMessagesCount[order.id] = 1;
+                    else
                     sentMessagesCount[order.id]++;
                 }
+            }
     }
 
 
