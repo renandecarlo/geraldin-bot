@@ -59,6 +59,13 @@ const config = {
             const request = response.request();
 
             if (request.url().includes('/refresh_pedidos')) {
+                /* Check response status and try logging again if needed */
+                let status = await response.status();
+                if(status != 200) {
+                    console.log("-> Request returned an error. Check if user is still logged in.", status);
+                    return await login();
+                }
+
                 let text = await response.text();
 
                 if(text)
@@ -98,7 +105,7 @@ const config = {
             if(!config.maxMsgs || !sentMessagesCount[order.id] || sentMessagesCount[order.id] < config.maxMsgs) { /* Check if enough messages have been sent */
                 if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
                     console.log('-> Order is waiting for too long. Sending message');
-
+                    
                     sendMessage(order);
 
                     sentMessagesDate[order.id] = Date.now();
@@ -106,7 +113,7 @@ const config = {
                     if(!sentMessagesCount[order.id])
                         sentMessagesCount[order.id] = 1;
                     else
-                    sentMessagesCount[order.id]++;
+                        sentMessagesCount[order.id]++;
                 }
             }
     }
