@@ -1,3 +1,6 @@
+# custom env
+.env.ini
+
 # venom
 tokens/
 
