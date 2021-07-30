@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config();
+const dotenv = require('dotenv').config({ path: './.env.ini' });
 const puppeteer = require('puppeteer');
 
 const io = require('socket.io-client');
