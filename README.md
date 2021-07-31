@@ -2,8 +2,9 @@
   <a href="#instalação"><b>Como Usar</b></a> | 
   <a href="#saiba-que"><b>Observações</b></a> | 
   <a href="#configurações"><b>Configurações</b></a> | 
+  <a href="#bugs-conhecidos"><b>Bugs Conhecidos</b></a> | 
   <a href="https://github.com/renandecarlo/geraldin-bot/discussions"><b>Comentários</b></a> | 
-  <a href="https://github.com/renandecarlo/geraldin-bot/issues"><b>Reportar problemas</b></a> | 
+  <a href="https://github.com/renandecarlo/geraldin-bot/issues"><b>Reportar Problemas</b></a> | 
   <a href="#contribuições"><b>Doar</b></a>
   <br /><br />
   <img src="https://user-images.githubusercontent.com/6974980/127627282-7f157406-0bce-4d3c-ae96-c0b8795467ed.png" /><br />
@@ -57,6 +58,10 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 | **MOSTRAR_NAVEGADOR_WHATSAPP** | Mostrar o navegador do WhatsApp Web. | `0 = navegador fica invisível`, `1 = navegador visível`|
 | **MOSTRAR_NAVEGADOR_GERALDO** | Mostrar o navegador do Geraldo. | `0 = navegador fica invisível`, `1 = navegador visível`|
 
+## Bugs conhecidos
+Por enquanto...
+- O bot só tenta enviar mensagem para o primeiro número cadastrado do parceiro. Caso seja um número que não tenha WhatsApp, a mensagem não é enviada.
+- Não é possível alterar a mensagem enviada.
 
 ## Dependências
 Este projeto usa o [puppeteer](https://github.com/puppeteer/puppeteer) para monitorar o Geraldo, e o [venom](https://github.com/orkestral/venom) para gerenciar o WhatsApp Web.
