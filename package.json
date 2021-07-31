@@ -15,16 +15,9 @@
     "venom-bot": "^3.0.21"
   },
   "pkg": {
+    "assets": "node_modules/**/*.*",
     "targets": [
       "node14-win"
-    ],
-    "scripts": [
-      "node_modules/puppeteer/lib/*.js",
-      "node_modules/puppeteer-extra-plugin-stealth/**/*.js"
-    ],
-    "assets": [
-      "node_modules/sharp/build/**",
-      "node_modules/sharp/vendor/*/lib/*"
     ],
     "outputPath": "../dist"
   },
@@ -34,6 +27,6 @@
     "start": "npm-run-all -r --parallel geraldo whatsapp",
     "prebuild": "rm -rf ../dist",
     "build": "pkg . -C brotli",
-    "postbuild": "cp geraldo-listener.js whatsapp-bot.js package.json package-lock.json LICENSE .env.ini.example README.md ../dist && mv ../dist/.env.ini.example ../dist/.env.ini"
+    "postbuild": "cp package.json package-lock.json LICENSE .env.ini.example README.md ../dist && mv ../dist/.env.ini.example ../dist/.env.ini"
   }
 }
