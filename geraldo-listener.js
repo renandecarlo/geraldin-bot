@@ -4,7 +4,6 @@ const puppeteer = require('puppeteer');
 const ChromeLauncher = require('chrome-launcher');
 
 const io = require('socket.io-client');
-const socket = io('ws://localhost:3000');
 
 const config = {
     user:               process.env.USUARIO,
@@ -122,9 +121,21 @@ const config = {
             }
     }
 
+    /* Connect to message socket */
+    let socket;
+    const connectSocket = () => {
+        if(!socket || !socket.connected) {
+            console.log('-> Socket disconnected, connecting...');
+            socket = io('ws://localhost:3000');
+        }
+    }
+
 
     /* Send message if order is waiting for too long */
     const sendMessage = order => {
+        if(!socket)
+            connectSocket();
+
         let wppNumber = order.restaurante.telefones.split(',')[0].replace(/[^\d+]/g, '');
         let waitingTime = Math.round((Date.now() - Date.parse(order.created)) / 1000 / 60);
 
