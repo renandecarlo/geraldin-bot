@@ -28,11 +28,16 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 ## Instalação
 > Requisitos: é necessário ter o [Google Chrome](https://www.google.com/intl/pt-BR/chrome/) instalado para o programa funcionar.
 
-> A versão 1.1-beta não está funcionando corretamente, use o método de instalação abaixo para instalar a versão 1.0-beta.
+### Modo fácil
+1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v1.2-beta/geraldin-bot.v1.2-beta.zip) para fazer o download do programa e descompacte o arquivo.
+2. Abra o arquivo `.env.ini` no Bloco de Notas ou WordPad e altere as configurações necessárias
+3. Inicie o programa abrindo o arquivo `geraldin-bot.exe`
+4. Leia o QRCode pelo WhatsApp (no celular) indo em Menu > Aparelhos conectados > Conectar um aparelho
+5. Pronto!
 
 ### Para desenvolvedores
 1. Instale o [NodeJS](https://nodejs.dev/)
-2. Faça o download da pasta [clicando aqui](https://github.com/renandecarlo/geraldin-bot/archive/refs/tags/v1.0-beta.zip)
+2. Clone este repositório ou faça o download da pasta [clicando aqui](https://github.com/renandecarlo/geraldin-bot/archive/refs/heads/main.zip)
 3. Extraia o arquivo se necessário e abra o cmd/console na pasta que você acabou de baixar
 4. Rode o comando: `npm install`
 5. Renomeie o arquivo `.env.ini.example` para `.env.ini`
