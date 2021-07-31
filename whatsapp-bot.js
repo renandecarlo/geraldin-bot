@@ -27,6 +27,7 @@ function handleSession(statusSession, session) {
  * Run
  */
 function start(client) {
+	console.log('-> Opening message socket');
 	io.listen(3000);
 
 	io.on('connection', socket => {
