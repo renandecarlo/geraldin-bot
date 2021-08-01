@@ -36,7 +36,7 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 4. Leia o QRCode pelo WhatsApp (no celular) indo em Menu > Aparelhos conectados > Conectar um aparelho
 5. Pronto!
 
-### Para desenvolvedores
+### Modo difícil (para desenvolvedores)
 1. Instale o [NodeJS](https://nodejs.dev/)
 2. Clone este repositório ou faça o download da pasta [clicando aqui](https://github.com/renandecarlo/geraldin-bot/archive/refs/heads/main.zip)
 3. Extraia o arquivo se necessário e abra o cmd/console na pasta que você acabou de baixar
