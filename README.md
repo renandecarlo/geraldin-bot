@@ -71,6 +71,8 @@ Este projeto usa o [puppeteer](https://github.com/puppeteer/puppeteer) para moni
 ## Contribuições
 Gostou do projeto? Considere fazer uma contribuição! ❤️
 
-<a href="https://picpay.me/renandecarlo" target="_blank">
-  <img src="https://user-images.githubusercontent.com/6974980/127633110-839b2ec2-e485-4b22-8eeb-59d133d6dc0f.png" width="128" />
-</a>
+
+| **PIX** |  |
+|--|--|
+| Chave aleatória | 48847a94-13bf-4c16-8f1e-16bbe2ce00ef |
+| QR Code | ![2bf3f09e-f364-4203-a727-aa4a5a98ecc6](https://user-images.githubusercontent.com/6974980/127782830-b4766b53-451c-4f37-a1e1-0be27148886c.png) |
