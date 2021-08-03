@@ -11,7 +11,8 @@ const config = {
     waitFor:            process.env.ESPERA_PRIMEIRA_MSG * 60 * 1000,
     waitForBetween:     process.env.ESPERA_ENTRE_MSG * 60 * 1000,
     maxMsgs:            parseInt(process.env.LIMITE_DE_MSGS),
-    headless:           process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true
+    headless:           process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
+    message:            process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
 };
 
 (async () => {
@@ -136,10 +137,32 @@ const config = {
         if(!socket)
             connectSocket();
 
-        let wppNumbers = order.restaurante.telefones.replace(/[^\d,+]/g, '').split(',');
-        let waitingTime = Math.round((Date.now() - Date.parse(order.created)) / 1000 / 60);
+        const wppNumbers = order.restaurante.telefones.replace(/[^\d,+]/g, '').split(',');
 
-        socket.emit('message', { wppNumbers: wppNumbers, message: `Olá parceiro, você tem um novo pedido (#${order.id}) esperando há *${waitingTime} minutos*! 🚀`});
+        socket.emit('message', { 
+            wppNumbers: wppNumbers, 
+            message: setCustomMessage(config.message, order)
+        });
+    }
+
+    /* Replace custom message details */
+    const setCustomMessage = (msg, order) => {
+        const waitingTime = Math.round((Date.now() - Date.parse(order.created)) / 1000 / 60);
+        const orderTime = new Date(order.created).toLocaleTimeString().substr(0, 5);
+
+        const replace = { 
+            '%tempo_esperando%':    waitingTime,
+            '%pedido_horario%':     orderTime,
+            '%pedido_n%':           order.id,
+            '%restaurante%':        order.restaurante.nome,
+            '%fominha%':            order.usuario.nome_completo,
+            '%fominha_n_pedidos%':  order.usuario.quantidade_pedidos,
+        };
+
+        for(const key in replace)
+            msg = msg.replace(key, replace[key]);
+
+        return msg;
     }
 
     /**
