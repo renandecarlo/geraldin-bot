@@ -4,7 +4,8 @@ const venom = require('venom-bot');
 const io = require('socket.io')();
 
 const config = {
-    headless: process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true
+    headless: 		process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true,
+	sendToEveryone:	process.env.ENVIA_MSG_TODOS_NUMEROS == '1' ? true : false,
 };
 
 /* Start venom browser */
@@ -32,17 +33,27 @@ function start(client) {
 
 	io.on('connection', socket => {
         console.log('-> Client connected.');
-		socket.on('message', (data) => {
-            console.log('-> Message received', data);
 
-			client
-                .sendText(`55${data.wppNumber}@c.us`, data.message)
-                .then((result) => {
-                    // console.log('Result: ', result); // return object success
-                })
-                .catch((error) => {
-                    console.error('Error when sending: ', error); //return object error
-                });
+		socket.on('message', async (data) => {
+            console.log('-> Sending message', data);
+
+			for(const wppNumber of data.wppNumbers) {
+				try {
+					let result = await client.sendText(`55${wppNumber}@c.us`, data.message);
+					// console.log('Result: ', result); // return object success
+
+					/* Check if message has been sent. Send to next number otherwise */
+					if(!result.erro) {
+						console.log('Sent!', [ result.status, wppNumber ] )
+						
+						/* Send to everyone if enabled, break otherwise. */
+						if(!config.sendToEveryone)
+							break;
+					}
+				} catch (error) {
+					console.log('Message not sent. Trying next number', [ error.status, wppNumber, error.text ] );
+				}
+			}
 		});
 	});
 }

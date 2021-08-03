@@ -136,10 +136,10 @@ const config = {
         if(!socket)
             connectSocket();
 
-        let wppNumber = order.restaurante.telefones.split(',')[0].replace(/[^\d+]/g, '');
+        let wppNumbers = order.restaurante.telefones.replace(/[^\d,+]/g, '').split(',');
         let waitingTime = Math.round((Date.now() - Date.parse(order.created)) / 1000 / 60);
 
-        socket.emit('message', { wppNumber: wppNumber, message: `Olá parceiro, você tem um novo pedido (#${order.id}) esperando há *${waitingTime} minutos*! 🚀`});
+        socket.emit('message', { wppNumbers: wppNumbers, message: `Olá parceiro, você tem um novo pedido (#${order.id}) esperando há *${waitingTime} minutos*! 🚀`});
     }
 
     /**
