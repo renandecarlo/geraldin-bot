@@ -1,4 +1,5 @@
 const dotenv = require('dotenv').config({ path: './.env.ini' });
+const chalk = require('chalk');
 
 const puppeteer = require('puppeteer');
 const ChromeLauncher = require('chrome-launcher');
@@ -38,12 +39,12 @@ const config = {
             await page.goto('https://geraldo.aiqfome.com/pedidos');
 
             if(await page.$('.user-header-detail')) {
-                console.log('-> Usuário já está logado');
+                console.log(chalk.blueBright('-> Usuário já está logado'));
                 
                 return true;
             }
         } catch (e) {
-            console.log('-> Não foi possível verificar se o usuário está logado', e);
+            console.log(chalk.redBright('-> Não foi possível verificar se o usuário está logado', e));
         }
     }
 
@@ -52,7 +53,7 @@ const config = {
         if(await isLoggedIn())
             return;
 
-        console.log('-> Usuário não está logado. Entrando...');
+        console.log(chalk.blueBright('-> Usuário não está logado. Entrando...'));
 
         try {
             if(!page.url().includes('/login')) /* Go to login page if not already */
@@ -65,7 +66,7 @@ const config = {
     
             await page.waitForSelector('.user-header-detail');
         } catch (e) {
-            console.log('-> Não foi possível fazer o login.', e);
+            console.log(chalk.redBright('-> Não foi possível fazer o login.'), e);
         }
     }
 
@@ -76,10 +77,12 @@ const config = {
             const request = response.request();
 
             if (request.url().includes('/refresh_pedidos')) {
+                // console.log(chalk.bgBlueBright('-> Verificando pedidos...'));
+
                 /* Check response status and try logging again if needed */
                 let status = await response.status();
                 if(status != 200) {
-                    console.log("-> A requisição retornou um erro. Verificando se o usuário ainda está logado", status);
+                    console.log(chalk.blueBright('-> A requisição retornou um erro. Verificando se o usuário ainda está logado'), status);
                     return await login();
                 }
 
@@ -100,7 +103,7 @@ const config = {
                 methods.refreshPedidos();
             })
         } catch(e) {
-            console.log('-> Não foi possível recarregar os pedidos.', e);
+            console.log(chalk.redBright('-> Não foi possível recarregar os pedidos.'), e);
 
             /* Try logging in once again */
             await login();
@@ -111,7 +114,7 @@ const config = {
     /* Parse orders */
     const parseOrders = () => {
         Object.values(orders).forEach(order => {
-            order.status == 1 && console.log('-> Pedido não lido identificado', [order.status, order.id, order.restaurante.nome, order.restaurante.telefones] );
+            order.status == 1 && console.log(chalk.yellow.inverse('-> Pedido não lido identificado'), chalk.yellowBright(order.usuario.nome_completo, order.id, order.restaurante.nome, order.restaurante.telefones));
             
             /* Order is waiting */
             if(order.status == 1)
@@ -128,7 +131,7 @@ const config = {
         if(Date.now() - Date.parse(order.created) > config.waitFor)
             if(!config.maxMsgs || !sentMessagesCount[order.id] || sentMessagesCount[order.id] < config.maxMsgs) { /* Check if enough messages have been sent */
                 if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
-                    console.log('-> O pedido está esperando por muito tempo. Enviando mensagem...');
+                    console.log(chalk.green('-> O pedido está esperando por muito tempo. Enviando mensagem...'));
                     
                     sendMessage(order);
 
@@ -145,7 +148,7 @@ const config = {
     /* Connect to message socket */
     const connectSocket = () => {
         if(!socket || !socket.connected) {
-            console.log('-> Socket desconectado, conectando...');
+            console.log(chalk.magentaBright('-> Socket desconectado, conectando...'));
             socket.connect();
         }
     }
@@ -205,7 +208,7 @@ const config = {
             await refreshOrders();
         }, 1000 * 60);
     } catch (e) {
-        console.log('-> Erro', e);
+        console.log(chalk.bgRedBright('-> Erro', e));
     }
 
     // await browser.close();

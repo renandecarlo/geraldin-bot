@@ -1,4 +1,5 @@
 const dotenv = require('dotenv').config({ path: './.env.ini' });
+const chalk = require('chalk');
 const venom = require('venom-bot');
 
 const io = require('socket.io')();
@@ -28,14 +29,14 @@ function handleSession(statusSession, session) {
  * Run
  */
 function start(client) {
-	console.log('-> Abrindo socket de mensagens');
+	console.log(chalk.magentaBright('-> Abrindo socket de mensagens'));
 	io.listen(3000);
 
 	io.on('connection', socket => {
-        console.log('-> Cliente socket conectado');
+        console.log(chalk.magentaBright('-> Cliente socket conectado'));
 
 		socket.on('message', async (data) => {
-            console.log('-> Enviando mensagem', data);
+            console.log(chalk.green('-> Enviando mensagem'), data.message);
 
 			for(const wppNumber of data.wppNumbers) {
 				try {
@@ -44,14 +45,14 @@ function start(client) {
 
 					/* Check if message has been sent. Send to next number otherwise */
 					if(!result.erro) {
-						console.log('-> Enviado!', [ result.status, wppNumber ] )
+						console.log(chalk.greenBright.inverse('-> Enviado!'), [ result.status, wppNumber ] )
 						
 						/* Send to everyone if enabled, break otherwise. */
 						if(!config.sendToEveryone)
 							break;
 					}
 				} catch (error) {
-					console.log('-> Mensagem não enviada. Tentando próximo número', [ error.status, wppNumber, error.text ] );
+					console.log(chalk.redBright('-> Mensagem não enviada. Tentando próximo número'), [ error.status, wppNumber, error.text ] );
 				}
 			}
 		});
