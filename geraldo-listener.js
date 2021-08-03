@@ -67,9 +67,6 @@ const config = {
             await page.waitForSelector('.user-header-detail');
         } catch (e) {
             console.log(chalk.redBright('-> Não foi possível fazer o login.'), e);
-
-            /* Try logging in once again */
-            await login();
         }
     }
 
