@@ -43,7 +43,7 @@ const config = {
         if(await isLoggedIn())
             return;
 
-        console.log('-> User is logged out. Log in.');
+        console.log('-> Usuário não está logado. Entrando...');
 
         if(!page.url().includes('/login')) /* Go to login page if not already */
             await page.goto('https://geraldo.aiqfome.com/login');
@@ -66,7 +66,7 @@ const config = {
                 /* Check response status and try logging again if needed */
                 let status = await response.status();
                 if(status != 200) {
-                    console.log("-> Request returned an error. Check if user is still logged in.", status);
+                    console.log("-> A requisição retornou um erro. Verificando se o usuário ainda está logado", status);
                     return await login();
                 }
 
@@ -91,7 +91,7 @@ const config = {
     /* Parse orders */
     const parseOrders = () => {
         Object.values(orders).forEach(order => {
-            order.status == 1 && console.log(order.status, order.id, order.restaurante.id, order.restaurante.nome, order.restaurante.telefones);
+            order.status == 1 && console.log('-> Pedido não lido identificado', [order.status, order.id, order.restaurante.nome, order.restaurante.telefones] );
             
             /* Order is waiting */
             if(order.status == 1)
@@ -108,7 +108,7 @@ const config = {
         if(Date.now() - Date.parse(order.created) > config.waitFor)
             if(!config.maxMsgs || !sentMessagesCount[order.id] || sentMessagesCount[order.id] < config.maxMsgs) { /* Check if enough messages have been sent */
                 if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
-                    console.log('-> Order is waiting for too long. Sending message');
+                    console.log('-> O pedido está esperando por muito tempo. Enviando mensagem...');
                     
                     sendMessage(order);
 
@@ -126,7 +126,7 @@ const config = {
     let socket;
     const connectSocket = () => {
         if(!socket || !socket.connected) {
-            console.log('-> Socket disconnected, connecting...');
+            console.log('-> Socket desconectado, conectando...');
             socket = io('ws://localhost:3000');
         }
     }

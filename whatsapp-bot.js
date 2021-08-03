@@ -28,14 +28,14 @@ function handleSession(statusSession, session) {
  * Run
  */
 function start(client) {
-	console.log('-> Opening message socket');
+	console.log('-> Abrindo socket de mensagens');
 	io.listen(3000);
 
 	io.on('connection', socket => {
-        console.log('-> Client connected.');
+        console.log('-> Cliente socket conectado');
 
 		socket.on('message', async (data) => {
-            console.log('-> Sending message', data);
+            console.log('-> Enviando mensagem', data);
 
 			for(const wppNumber of data.wppNumbers) {
 				try {
@@ -44,14 +44,14 @@ function start(client) {
 
 					/* Check if message has been sent. Send to next number otherwise */
 					if(!result.erro) {
-						console.log('Sent!', [ result.status, wppNumber ] )
+						console.log('-> Enviado!', [ result.status, wppNumber ] )
 						
 						/* Send to everyone if enabled, break otherwise. */
 						if(!config.sendToEveryone)
 							break;
 					}
 				} catch (error) {
-					console.log('Message not sent. Trying next number', [ error.status, wppNumber, error.text ] );
+					console.log('-> Mensagem não enviada. Tentando próximo número', [ error.status, wppNumber, error.text ] );
 				}
 			}
 		});
