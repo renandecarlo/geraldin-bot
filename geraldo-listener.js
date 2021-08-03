@@ -4,6 +4,7 @@ const puppeteer = require('puppeteer');
 const ChromeLauncher = require('chrome-launcher');
 
 const io = require('socket.io-client');
+const socket = io('ws://localhost:3000');
 
 const config = {
     user:               process.env.USUARIO,
@@ -33,9 +34,17 @@ const config = {
 
     /* Check if user is logged in */
     const isLoggedIn = async () => {
-        await page.goto('https://geraldo.aiqfome.com/pedidos');
+        try {
+            await page.goto('https://geraldo.aiqfome.com/pedidos');
 
-        return await page.$('.user-header-detail');
+            if(await page.$('.user-header-detail')) {
+                console.log('-> Usuário já está logado');
+                
+                return true;
+            }
+        } catch (e) {
+            console.log('-> Não foi possível verificar se o usuário está logado', e);
+        }
     }
 
     /* Log in user */
@@ -45,15 +54,19 @@ const config = {
 
         console.log('-> Usuário não está logado. Entrando...');
 
-        if(!page.url().includes('/login')) /* Go to login page if not already */
-            await page.goto('https://geraldo.aiqfome.com/login');
-        
-        await page.type('input[name=login]', config.user);
-        await page.type('input[name=senha]', config.password);
-
-        await page.click('[type=submit]');
-
-        await page.waitForSelector('.user-header-detail');
+        try {
+            if(!page.url().includes('/login')) /* Go to login page if not already */
+                await page.goto('https://geraldo.aiqfome.com/login');
+            
+            await page.type('input[name=login]', config.user);
+            await page.type('input[name=senha]', config.password);
+    
+            await page.click('[type=submit]');
+    
+            await page.waitForSelector('.user-header-detail');
+        } catch (e) {
+            console.log('-> Não foi possível fazer o login.', e);
+        }
     }
 
     /* Intercept order refresh requests */
@@ -82,9 +95,16 @@ const config = {
 
     /* Refresh orders */
     const refreshOrders = async () => {
-        await page.evaluate(() => {
-            methods.refreshPedidos();
-        })
+        try {
+            await page.evaluate(() => {
+                methods.refreshPedidos();
+            })
+        } catch(e) {
+            console.log('-> Não foi possível recarregar os pedidos.', e);
+
+            /* Try logging in once again */
+            await login();
+        }
     }
 
 
@@ -123,19 +143,17 @@ const config = {
     }
 
     /* Connect to message socket */
-    let socket;
     const connectSocket = () => {
         if(!socket || !socket.connected) {
             console.log('-> Socket desconectado, conectando...');
-            socket = io('ws://localhost:3000');
+            socket.connect();
         }
     }
 
 
     /* Send message if order is waiting for too long */
     const sendMessage = order => {
-        if(!socket)
-            connectSocket();
+        connectSocket();
 
         const wppNumbers = order.restaurante.telefones.replace(/[^\d,+]/g, '').split(',');
 
@@ -169,22 +187,26 @@ const config = {
      * Run
      */
 
-    /* Check if logged in */
-    await login();    
-
-    /* Head to orders page */
-    await page.goto('https://geraldo.aiqfome.com/pedidos');
-
-    /* Intercept and parse orders */
-    interceptOrders();
-
-    /* Refresh orders */
-    refreshOrders();
-
-    /* Refresh orders every 1 minute */
-    let ordersMonitor = setInterval(async () => {
+    try {
+        /* Check if logged in */
+        await login();
+    
+        /* Intercept and parse orders */
+        interceptOrders();
+    
+        /* Head to orders page */
+        await page.goto('https://geraldo.aiqfome.com/pedidos');
+    
+        /* Refresh orders */
         await refreshOrders();
-    }, 1000 * 60);
+    
+        /* Refresh orders every 1 minute */
+        let ordersMonitor = setInterval(async () => {
+            await refreshOrders();
+        }, 1000 * 60);
+    } catch (e) {
+        console.log('-> Erro', e);
+    }
 
     // await browser.close();
 })()
