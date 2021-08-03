@@ -55,13 +55,19 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 | **ESPERA_PRIMEIRA_MSG** | Aguardar quanto tempo *(em minutos)* para enviar a mensagem depois do pedido chegar. | Ex: `0` (instantâneo), `1`, `3`, `5` (minutos).|
 | **ESPERA_ENTRE_MSG** | Quanto tempo *(em minutos)* esperar para enviar outra mensagem, caso o pedido ainda não tenha sido lido. | Ex: `2`, `4`, `6` (minutos)|
 | **LIMITE_DE_MSGS** | Limitar a quantidade de mensagens enviadas. | `0 = ilimitado`, `1 = envia só a primeira mensagem`, `2 = 2 msgs`..|
+| **ENVIA_MSG_TODOS_NUMEROS** | Envia mensagem para todos os números cadastrados do parceiro. | `0 = envia somente para o primeiro número válido de WhatsApp`, `1 = habilitado`|
 | **MOSTRAR_NAVEGADOR_WHATSAPP** | Mostrar o navegador do WhatsApp Web. | `0 = navegador fica invisível`, `1 = navegador visível`|
 | **MOSTRAR_NAVEGADOR_GERALDO** | Mostrar o navegador do Geraldo. | `0 = navegador fica invisível`, `1 = navegador visível`|
+| **MENSAGEM** | Personaliza a mensagem a ser enviada. Podem ser usados os seguintes códigos na mensagem: | `%tempo_esperando%` - Tempo que o pedido está em aberto, em minutos |
+| | | `%pedido_horario%` - Horário em que o pedido foi feito (hh:mm) |
+| | | `%pedido_n%` - Número do pedido |
+| | | `%restaurante%` - Nome do restaurante parceiro |
+| | | `%fominha%` - Nome completo do fominha |
+| | | `%fominha_n_pedidos%` - Nº de pedidos do fominha |
 
 ## Bugs conhecidos
 Por enquanto...
-- O bot só tenta enviar mensagem para o primeiro número cadastrado do parceiro. Caso seja um número que não tenha WhatsApp, a mensagem não é enviada.
-- Não é possível alterar a mensagem enviada.
+- Às vezes o bot não consegue efetuar o login assim que é aberto, atrasando o funcionamento...
 
 ## Dependências
 Este projeto usa o [puppeteer](https://github.com/puppeteer/puppeteer) para monitorar o Geraldo, e o [venom](https://github.com/orkestral/venom) para gerenciar o WhatsApp Web.
