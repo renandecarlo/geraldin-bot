@@ -30,7 +30,7 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 > Requisitos: é necessário ter o [Google Chrome](https://www.google.com/intl/pt-BR/chrome/) instalado para o programa funcionar.
 
 ### Modo fácil
-1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v1.2-beta/geraldin-bot.v1.2-beta.zip) para fazer o download do programa e descompacte o arquivo.
+1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v1.3-beta/geraldin-bot.v1.3-beta.zip) para fazer o download do programa e descompacte o arquivo.
 2. Abra o arquivo `.env.ini` no Bloco de Notas ou WordPad e altere as configurações necessárias
 3. Inicie o programa abrindo o arquivo `geraldin-bot.exe`
 4. Leia o QRCode pelo WhatsApp (no celular) indo em Menu > Aparelhos conectados > Conectar um aparelho
