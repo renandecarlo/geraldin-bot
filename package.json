@@ -24,8 +24,8 @@
     "outputPath": "../dist"
   },
   "scripts": {
-    "geraldo": "node geraldo-listener",
-    "whatsapp": "node whatsapp-bot",
+    "geraldo": "node src/geraldo-listener",
+    "whatsapp": "node src/whatsapp-bot",
     "start": "npm-run-all -r --parallel geraldo whatsapp",
     "prebuild": "rm -rf ../dist",
     "build": "pkg . -C brotli",
