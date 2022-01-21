@@ -32,7 +32,7 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 ### Modo fácil
 Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 
-1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v1.7.1-beta/geraldin-bot.v1.7-beta.zip) para fazer o download do programa e descompacte o arquivo.
+1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v1.7-beta/geraldin-bot.v1.7-beta.zip) para fazer o download do programa e descompacte o arquivo.
 2. Abra o arquivo `.env.ini` no Bloco de Notas ou WordPad e altere as configurações necessárias
 3. Inicie o programa abrindo o arquivo `geraldin-bot.exe`
 4. Leia o QRCode pelo WhatsApp (no celular) indo em Menu > Aparelhos conectados > Conectar um aparelho
