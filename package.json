@@ -19,7 +19,7 @@
   "pkg": {
     "assets": "node_modules/**/*.*",
     "targets": [
-      "node14-win"
+      "node16-win"
     ],
     "outputPath": "../dist"
   },
