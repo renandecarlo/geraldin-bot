@@ -89,7 +89,11 @@ const config = {
                 let text = await response.text();
 
                 if(text)
-                    orders = JSON.parse(text);
+                    try {
+                        orders = JSON.parse(text);
+                    } catch(e) {
+                        console.log(chalk.redBright('-> Não foi possível ler os dados dos pedidos.'), e);
+                    }
 
                 parseOrders();
             }
