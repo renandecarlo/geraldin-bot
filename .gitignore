@@ -1,4 +1,5 @@
 .env.ini
+.env.build
 tokens/
 test/
 
