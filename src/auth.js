@@ -15,7 +15,7 @@ const config = {
 class Auth {
     async signin() {
         /* Load spinner */
-        const spinner = ora(`Verificando assinatura para o usuário `+ chalk.blueBright(config.user) +`... \n`).start();
+        const spinner = ora(`Verificando assinatura para o usuário `+ chalk.blueBright(config.user) +`...`).start();
 
         try {
             const res = await fetch(`${config.apiEndpoint}?user=${config.user}`);
@@ -25,19 +25,19 @@ class Auth {
 
             /* Check if user has valid subscription */
             if(data.error == true || data.credentials == 'invalid') {
-                spinner.fail(`Não encontrei uma assinatura válida para o usuário `+ chalk.blueBright(config.user));
+                spinner.fail(`Não encontrei uma assinatura válida para o usuário `+ chalk.blueBright(config.user) +`\n`);
                 console.error(data);
 
                 return false;
             }
 
             else if(data.credentials == 'valid')
-                spinner.succeed(`Assinatura válida! Iniciando... \n`);
+                spinner.succeed(`Assinatura válida! Iniciando...`);
 
             return true;
         } catch(e) {
-            spinner.fail(chalk.redBright('Não foi possível verificar a assinatura no momento. Tente mais tarde.'));
-            
+            spinner.fail(chalk.redBright('Não foi possível verificar a assinatura no momento. Tente mais tarde. \n'));
+
             return false;
         }
     }
