@@ -32,7 +32,7 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 ### Modo fácil
 Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 
-1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v1.10-beta/geraldin-bot.v1.10.0-beta.zip) para fazer o download do programa e descompacte o arquivo.
+1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v2.0-beta/geraldin-bot.v2.0.0-beta.zip) para fazer o download do programa e descompacte o arquivo.
 2. Abra o arquivo `.env.ini` no Bloco de Notas ou WordPad e altere as configurações necessárias
 3. Inicie o programa abrindo o arquivo `geraldin-bot.exe`
 4. Leia o QRCode pelo WhatsApp (no celular) indo em Menu > Aparelhos conectados > Conectar um aparelho
@@ -70,17 +70,12 @@ Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 ## Bugs conhecidos
 Por enquanto...
 - Às vezes o bot não consegue efetuar o login assim que é aberto, atrasando o funcionamento...
+- Aparece o erro "Não foi possível encontrar o módulo..." quando inicia o programa. Tente limpar a pasta temporária do Windows. Abra o Windows Explorer, na barra de endereço digite `%AppData%\..\Local\Temp\`, e apague todo o conteúdo desta pasta.
 
 ## Dependências
 Este projeto usa o [puppeteer](https://github.com/puppeteer/puppeteer) para monitorar o Geraldo, e o [venom](https://github.com/orkestral/venom) para gerenciar o WhatsApp Web.
 
 <br /><br />
 
-## Contribuições
-Gostou do projeto? Considere fazer uma contribuição! ❤️
-
-
-| **PIX** |  |
-|--|--|
-| Chave aleatória | 48847a94-13bf-4c16-8f1e-16bbe2ce00ef |
-| QR Code | ![2bf3f09e-f364-4203-a727-aa4a5a98ecc6](https://user-images.githubusercontent.com/6974980/127782830-b4766b53-451c-4f37-a1e1-0be27148886c.png) |
+## Assinatura
+A partir da v2.0 este programa passou a operar com assinaturas pagas. Acesse https://geraldin.vip e veja mais detalhes.
