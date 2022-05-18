@@ -75,7 +75,5 @@ Por enquanto...
 ## Dependências
 Este projeto usa o [puppeteer](https://github.com/puppeteer/puppeteer) para monitorar o Geraldo, e o [venom](https://github.com/orkestral/venom) para gerenciar o WhatsApp Web.
 
-<br /><br />
-
 ## Assinatura
 A partir da v2.0 este programa passou a operar com assinaturas pagas. Acesse https://geraldin.vip e veja mais detalhes.
