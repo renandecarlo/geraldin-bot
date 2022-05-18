@@ -32,7 +32,7 @@
     "geraldo": "node src/geraldo-listener",
     "whatsapp": "node src/whatsapp-bot",
     "start": "npm-run-all -r --parallel geraldo whatsapp",
-    "prebuild": "rm -rf ../dist && rm -rf ../geraldin-bot.v%npm_package_version%.zip",
+    "prebuild": "rm -rf ../dist && rm -rf ../geraldin-bot.v%npm_package_version%.zip && rm -rf node_modules/ && npm install",
     "build": "pkg . -C brotli",
     "postbuild": "cp package.json package-lock.json LICENSE .env.ini.example README.md ../dist && mv ../dist/.env.ini.example ../dist/.env.ini && npm run zip",
     "zip": "powershell Compress-Archive ../dist/* ../geraldin-bot.v%npm_package_version%.zip"
