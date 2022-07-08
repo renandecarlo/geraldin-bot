@@ -9,6 +9,12 @@ const config = {
 	sendToEveryone:	process.env.ENVIA_MSG_TODOS_NUMEROS == '1' ? true : false,
 };
 
+/* Check if user is signed in */
+if(!module.parent || !module.parent.signedin) {
+	console.log(chalk.bgRedBright('-> Não foi possível verificar a assinatura'));
+	process.exit();
+}
+
 /* Start venom browser */
 venom
 	.create('geraldo-bot', false, handleSession, { headless: config.headless, multidevice: true, autoClose: false })

@@ -3,6 +3,8 @@ const readline = require('readline');
 
 (async () => {    
     if(await auth.signin()) {
+        module.signedin = true;
+
         require('./whatsapp-bot');
         require('./geraldo-listener');
     }
