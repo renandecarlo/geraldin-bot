@@ -17,12 +17,6 @@ const config = {
     message:            process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
 };
 
-/* Check if user is signed in */
-if(!module.parent || !module.parent.signedin) {
-    console.log(chalk.bgRedBright('-> Não foi possível verificar a assinatura'));
-    process.exit();
-}
-
 (async () => {
     /* Set up browser */
     const chromePath = ChromeLauncher.Launcher.getInstallations()[0];
