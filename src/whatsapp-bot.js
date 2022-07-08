@@ -11,7 +11,7 @@ const config = {
 
 /* Start venom browser */
 venom
-	.create('geraldo-bot', false, handleSession, { headless: config.headless, multidevice: true })
+	.create('geraldo-bot', false, handleSession, { headless: config.headless, multidevice: true, autoClose: false })
 	.then((client) => start(client))
 	.catch((erro) => {
 		console.log(erro);
