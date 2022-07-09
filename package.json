@@ -16,7 +16,7 @@
     "puppeteer-core": "^15.3.2",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
-    "venom-bot": "^4.2.0"
+    "venom-bot": "github:renandecarlo/venom"
   },
   "pkg": {
     "assets": [
