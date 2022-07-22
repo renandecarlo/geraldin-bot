@@ -30,6 +30,9 @@ if(!module.parent || !module.parent.signedin) {
 }
 
 (async () => {
+    /* Base url */
+    const baseUrl = 'https://geraldo.aiqfome.com/';
+
     /* Set up browser */
     const chromePath = ChromeLauncher.Launcher.getInstallations()[0];
     const browser = await puppeteer.launch({ 
@@ -42,7 +45,7 @@ if(!module.parent || !module.parent.signedin) {
 
     /* Avoid notification permission dialog */
     const context = browser.defaultBrowserContext();
-    await context.overridePermissions('https://geraldo.aiqfome.com/', []);
+    await context.overridePermissions(baseUrl, []);
 
     /* Handle browser exit */
     page.on('close', msg => {
@@ -52,7 +55,7 @@ if(!module.parent || !module.parent.signedin) {
     /* Check if user is logged in */
     const isLoggedIn = async () => {
         try {
-            await page.goto('https://geraldo.aiqfome.com/pedidos');
+            await page.goto(`${baseUrl}/pedidos`);
 
             if(await page.$('.user-header-detail')) {
                 console.log(chalk.blueBright('-> Usuário já está logado'));
@@ -73,7 +76,7 @@ if(!module.parent || !module.parent.signedin) {
 
         try {
             if(!page.url().includes('/login')) /* Go to login page if not already */
-                await page.goto('https://geraldo.aiqfome.com/login');
+                await page.goto(`${baseUrl}/login`);
             
             await page.type('input[name=login]', config.user);
             await page.type('input[name=senha]', config.password);
@@ -268,7 +271,7 @@ if(!module.parent || !module.parent.signedin) {
         interceptOrders();
     
         /* Head to orders page */
-        await page.goto('https://geraldo.aiqfome.com/pedidos');
+        await page.goto(`${baseUrl}/pedidos`);
     
         /* Refresh orders */
         await refreshOrders();
