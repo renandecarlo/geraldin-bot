@@ -32,7 +32,7 @@ class Auth {
             }
 
             else if(data.credentials == 'valid')
-                spinner.succeed(`Assinatura válida! Iniciando...`);
+                spinner.succeed(`Assinatura válida! Iniciando...\n`);
 
             return true;
         } catch(e) {

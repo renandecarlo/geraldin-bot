@@ -1,7 +1,10 @@
 const auth = require('./auth');
 const readline = require('readline');
+const checkUpdate = require('./check-update');
 
 (async () => {    
+    await checkUpdate();
+
     if(await auth.signin()) {
         module.signedin = true;
 
