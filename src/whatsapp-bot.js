@@ -3,8 +3,9 @@ const chalk = require('chalk');
 const venom = require('venom-bot');
 
 const config = {
-    headless: 		process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true,
-	sendToEveryone:	process.env.ENVIA_MSG_TODOS_NUMEROS == '1' ? true : false,
+    headless: 			process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true,
+	sendToEveryone:		process.env.ENVIA_MSG_TODOS_NUMEROS == '1' ? true : false,
+	numbersToFilter:	process.env.FILTRO_TELEFONES,
 };
 
 /* Check if user is signed in */
@@ -31,7 +32,15 @@ const sendMessage = async data => {
 
 	console.log(chalk.green('-> Enviando mensagem'), data.message);
 
+	const numbersToFilter = config.numbersToFilter?.replace(/[^\d,+]/g, '').split(',');
+
 	for(const wppNumber of data.wppNumbers) {
+		/* Filter number according to config option */
+		if(numbersToFilter.includes(wppNumber)) {
+			console.log(chalk.redBright('-> Número filtrado. Tentando próximo número'), [ wppNumber ]);
+			continue;
+		}			
+
 		try {
 			let result = await client.sendText(`55${wppNumber}@c.us`, data.message);
 			// console.log('Result: ', result); // return object success
