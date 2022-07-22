@@ -15,6 +15,10 @@ const config = {
     sendToExtraNumbers:	    process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
     sendOnlyToExtraNumbers:	process.env.ENVIA_MSG_SOMENTE_OUTROS_TELEFONES == '1' ? true : false,
     sellersToFilter:        process.env.FILTRO_LOJAS_ID,
+    notifyPartner:          process.env.NOTIFICA_LICENCIADO,
+    notifyPartnerWaitFor:   process.env.NOTIFICA_LICENCIADO_TEMPO,
+    notifyPartnerNumbers:   process.env.NOTIFICA_LICENCIADO_NUMEROS,
+    notifyPartnerMsg:       process.env.NOTIFICA_LICENCIADO_MSG,
     headless:               process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
     message:                process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
 };
@@ -142,8 +146,10 @@ if(!module.parent || !module.parent.signedin) {
     /* Check if orders are old enough */
     let sentMessagesDate = {};
     let sentMessagesCount = {};
+    let partnerMessageSent = false;
     const checkOrder = order => {
 
+        /* Send message if order is old enough */
         if(Date.now() - Date.parse(order.created) > config.waitFor)
             if(!config.maxMsgs || !sentMessagesCount[order.id] || sentMessagesCount[order.id] < config.maxMsgs) { /* Check if enough messages have been sent */
                 if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
@@ -158,6 +164,13 @@ if(!module.parent || !module.parent.signedin) {
                     else
                         sentMessagesCount[order.id]++;
                 }
+            }
+
+        /* Also send the partner a message if it's old enough */
+        if(config.notifyPartner)
+            if(!partnerMessageSent && Date.now() - Date.parse(order.created) > config.notifyPartnerWaitFor) {
+                if(sendPartnerMessage(order))
+                partnerMessageSent = true;
             }
     }
 
@@ -197,6 +210,16 @@ if(!module.parent || !module.parent.signedin) {
         wpp.sendMessage({ 
             wppNumbers: wppNumbers, 
             message: setCustomMessage(config.message, order)
+        });
+    }
+
+    /* Send a message back to the partner if order is waiting for too long */
+    const sendPartnerMessage = order => {
+        const wppNumbers = config.notifyPartnerNumbers?.replace(/[^\d,+]/g, '').split(',');
+
+        wpp.sendMessage({ 
+            wppNumbers: wppNumbers, 
+            message: setCustomMessage(config.notifyPartnerMsg, order)
         });
     }
 
