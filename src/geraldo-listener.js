@@ -37,7 +37,7 @@ if(!module.parent || !module.parent.signedin) {
 
     /* Avoid notification permission dialog */
     const context = browser.defaultBrowserContext();
-    await context.overridePermissions('https://geraldo.aiqfome.com/', ['notifications']);
+    await context.overridePermissions('https://geraldo.aiqfome.com/', []);
 
     /* Handle browser exit */
     page.on('close', msg => {
