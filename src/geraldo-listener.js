@@ -15,10 +15,10 @@ const config = {
     sendToExtraNumbers:	    process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
     sendOnlyToExtraNumbers:	process.env.ENVIA_MSG_SOMENTE_OUTROS_TELEFONES == '1' ? true : false,
     sellersToFilter:        process.env.FILTRO_LOJAS_ID,
-    notifyPartner:          process.env.NOTIFICA_LICENCIADO,
-    notifyPartnerWaitFor:   process.env.NOTIFICA_LICENCIADO_TEMPO,
+    notifyPartner:          process.env.NOTIFICA_LICENCIADO == '1' ? true : false,
+    notifyPartnerWaitFor:   process.env.NOTIFICA_LICENCIADO_TEMPO * 60 * 1000,
     notifyPartnerNumbers:   process.env.NOTIFICA_LICENCIADO_NUMEROS,
-    notifyPartnerMsg:       process.env.NOTIFICA_LICENCIADO_MSG,
+    notifyPartnerMsg:       process.env.NOTIFICA_LICENCIADO_MSG || '🚨 Atenção, o *%restaurante%* tem um pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*!',
     headless:               process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
     message:                process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
 };
