@@ -155,14 +155,14 @@ if(!module.parent || !module.parent.signedin) {
                 if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
                     console.log(chalk.green('-> O pedido está esperando por muito tempo. Enviando mensagem...'));
                     
-                    sendMessage(order);
+                    if(sendMessage(order)) {
+                        sentMessagesDate[order.id] = Date.now();
 
-                    sentMessagesDate[order.id] = Date.now();
-
-                    if(!sentMessagesCount[order.id])
-                        sentMessagesCount[order.id] = 1;
-                    else
-                        sentMessagesCount[order.id]++;
+                        if(!sentMessagesCount[order.id])
+                            sentMessagesCount[order.id] = 1;
+                        else
+                            sentMessagesCount[order.id]++;
+                    }
                 }
             }
 
@@ -170,7 +170,7 @@ if(!module.parent || !module.parent.signedin) {
         if(config.notifyPartner)
             if(!partnerMessageSent && Date.now() - Date.parse(order.created) > config.notifyPartnerWaitFor) {
                 if(sendPartnerMessage(order))
-                partnerMessageSent = true;
+                    partnerMessageSent = true;
             }
     }
 

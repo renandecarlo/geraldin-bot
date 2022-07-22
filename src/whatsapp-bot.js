@@ -57,6 +57,8 @@ const sendMessage = async data => {
 			console.log(chalk.redBright('-> Mensagem não enviada. Tentando próximo número'), [ error.status, wppNumber, error.text ] );
 		}
 	}
+
+	return true;
 }
 
 /**
