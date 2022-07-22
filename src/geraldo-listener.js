@@ -96,22 +96,22 @@ if(!module.parent || !module.parent.signedin) {
                 // console.log(chalk.bgBlueBright('-> Verificando pedidos...'));
 
                 /* Check response status and try logging again if needed */
-                let status = await response.status();
+                let status = response.status();
                 if(status != 200) {
                     console.log(chalk.blueBright('-> A requisição retornou um erro. Verificando se o usuário ainda está logado'), status);
                     return await login();
                 }
 
+                try {
                 let text = await response.text();
 
-                if(text)
-                    try {
+                    if(text) {
                         orders = JSON.parse(text);
-                    } catch(e) {
-                        console.log(chalk.redBright('-> Não foi possível ler os dados dos pedidos.'), e);
+                        parseOrders();
                     }
-
-                parseOrders();
+                    } catch(e) {
+                    console.log(chalk.redBright('-> Não foi possível ler os dados dos pedidos.'), e, response);
+                    }
             }
         })
     }
