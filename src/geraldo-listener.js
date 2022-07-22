@@ -35,6 +35,10 @@ if(!module.parent || !module.parent.signedin) {
     });
     const page = await browser.newPage();
 
+    /* Avoid notification permission dialog */
+    const context = browser.defaultBrowserContext();
+    await context.overridePermissions('https://geraldo.aiqfome.com/', ['notifications']);
+
     /* Handle browser exit */
     page.on('close', msg => {
         process.exit();
