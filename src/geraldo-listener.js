@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const puppeteer = require('puppeteer');
 const ChromeLauncher = require('chrome-launcher');
 
-const wpp = require('./whatsapp-bot.js');
+const wpp = require('./whatsapp-bot');
 
 const config = {
     user:                   process.env.USUARIO,
