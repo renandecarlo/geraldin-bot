@@ -83,7 +83,10 @@ if(!module.parent || !module.parent.signedin) {
     
             await page.click('[type=submit]');
 
-            await page.waitForSelector('.user-header-detail');
+            await page.waitForNavigation();
+
+            if(!await page.$('.user-header-detail'))
+                return false;
         } catch (e) {
             console.log(chalk.redBright('-> Não foi possível fazer o login.'), e);
         }
@@ -125,8 +128,12 @@ if(!module.parent || !module.parent.signedin) {
     /* Refresh orders */
     const refreshOrders = async () => {
         try {
+            /* Check if it's on order page before refreshing */
+            if(page.url() != `${baseUrl}/pedidos`)
+                return await login();
+
             await page.evaluate(() => {
-                methods.refreshPedidos();
+                methods?.refreshPedidos?.();
             })
         } catch(e) {
             console.log(chalk.redBright('-> Não foi possível recarregar os pedidos.'), e);
