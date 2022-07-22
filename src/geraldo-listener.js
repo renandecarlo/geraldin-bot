@@ -7,14 +7,15 @@ const ChromeLauncher = require('chrome-launcher');
 const wpp = require('./whatsapp-bot.js');
 
 const config = {
-    user:               process.env.USUARIO,
-    password:           process.env.SENHA,
-    waitFor:            process.env.ESPERA_PRIMEIRA_MSG * 60 * 1000,
-    waitForBetween:     process.env.ESPERA_ENTRE_MSG * 60 * 1000,
-    maxMsgs:            parseInt(process.env.LIMITE_DE_MSGS),
-    sendToExtraNumbers:	process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
-    headless:           process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
-    message:            process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
+    user:                   process.env.USUARIO,
+    password:               process.env.SENHA,
+    waitFor:                process.env.ESPERA_PRIMEIRA_MSG * 60 * 1000,
+    waitForBetween:         process.env.ESPERA_ENTRE_MSG * 60 * 1000,
+    maxMsgs:                parseInt(process.env.LIMITE_DE_MSGS),
+    sendToExtraNumbers:	    process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
+    sendOnlyToExtraNumbers:	process.env.ENVIA_MSG_SOMENTE_OUTROS_TELEFONES == '1' ? true : false,
+    headless:               process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
+    message:                process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
 };
 
 /* Check if user is signed in */
@@ -124,7 +125,7 @@ if(!module.parent || !module.parent.signedin) {
     /* Parse orders */
     const parseOrders = () => {
         Object.values(orders).forEach(order => {
-            order.status == 1 && console.log(chalk.yellow.inverse('-> Pedido não lido identificado'), chalk.yellowBright(order.usuario.nome_completo, order.id, order.restaurante.nome, order.restaurante.telefones));
+            order.status == 1 && console.log(chalk.yellow.inverse('-> Pedido não lido identificado'), chalk.yellowBright(order.usuario.nome_completo, order.id, order.restaurante.nome, getOrderSellerNumbers(order)));
             
             /* Order is waiting */
             if(order.status == 1)
@@ -155,15 +156,24 @@ if(!module.parent || !module.parent.signedin) {
             }
     }
 
-    /* Send message if order is waiting for too long */
-    const sendMessage = order => {
+    /* Get order seller numbers according to desired config option */
+    const getOrderSellerNumbers = (order) => {
         let numbers;
 
-        if(config.sendToExtraNumbers)
-            numbers = order.restaurante.telefones_celulares;
-        else
+        if(config.sendToExtraNumbers) {
+            if(config.sendOnlyToExtraNumbers)
+                numbers = order.restaurante.celulares;
+            else
+                numbers = order.restaurante.telefones_celulares;
+        } else
             numbers = order.restaurante.telefones;
 
+        return numbers;
+    }
+
+    /* Send message if order is waiting for too long */
+    const sendMessage = order => {
+        const numbers = getOrderSellerNumbers(order);
         const wppNumbers = numbers.replace(/[^\d,+]/g, '').split(',');
 
         wpp.sendMessage({ 
