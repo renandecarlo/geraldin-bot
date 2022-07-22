@@ -14,6 +14,7 @@ const config = {
     maxMsgs:                parseInt(process.env.LIMITE_DE_MSGS),
     sendToExtraNumbers:	    process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
     sendOnlyToExtraNumbers:	process.env.ENVIA_MSG_SOMENTE_OUTROS_TELEFONES == '1' ? true : false,
+    sellersToFilter:        process.env.FILTRO_LOJAS_ID,
     headless:               process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
     message:                process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
 };
@@ -160,6 +161,13 @@ if(!module.parent || !module.parent.signedin) {
             }
     }
 
+    /* Check if seller is in config filter list */
+    const filteredSeller = id => {
+        const sellersToFilter = config.sellersToFilter?.split(',').map(v => Number(v));
+
+        return sellersToFilter.includes(id);
+    }
+
     /* Get order seller numbers according to desired config option */
     const getOrderSellerNumbers = order => {
         let numbers;
@@ -177,6 +185,12 @@ if(!module.parent || !module.parent.signedin) {
 
     /* Send message if order is waiting for too long */
     const sendMessage = order => {
+        /* Check if seller is in filter list */
+        if(filteredSeller(order.restaurante.id)) {
+            console.log(chalk.redBright('-> O restaurante está bloqueado no filtro. A mensagem não será enviada.'), [ order.restaurante.id, order.restaurante.nome ] );
+            return;
+        }
+
         const numbers = getOrderSellerNumbers(order);
         const wppNumbers = numbers.replace(/[^\d,+]/g, '').split(',');
 
