@@ -161,7 +161,7 @@ if(!module.parent || !module.parent.signedin) {
     }
 
     /* Get order seller numbers according to desired config option */
-    const getOrderSellerNumbers = (order) => {
+    const getOrderSellerNumbers = order => {
         let numbers;
 
         if(config.sendToExtraNumbers) {
