@@ -31,7 +31,7 @@ if(!module.parent || !module.parent.signedin) {
 
 (async () => {
     /* Base url */
-    const baseUrl = 'https://geraldo.aiqfome.com/';
+    const baseUrl = 'https://geraldo.aiqfome.com';
 
     /* Set up browser */
     const chromePath = ChromeLauncher.Launcher.getInstallations()[0];
