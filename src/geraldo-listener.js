@@ -4,8 +4,7 @@ const chalk = require('chalk');
 const puppeteer = require('puppeteer');
 const ChromeLauncher = require('chrome-launcher');
 
-const io = require('socket.io-client');
-const socket = io('ws://localhost:3000');
+const wpp = require('./whatsapp-bot.js');
 
 const config = {
     user:               process.env.USUARIO,
@@ -155,22 +154,11 @@ if(!module.parent || !module.parent.signedin) {
             }
     }
 
-    /* Connect to message socket */
-    const connectSocket = () => {
-        if(!socket || !socket.connected) {
-            console.log(chalk.magentaBright('-> Socket desconectado, conectando...'));
-            socket.connect();
-        }
-    }
-
-
     /* Send message if order is waiting for too long */
     const sendMessage = order => {
-        connectSocket();
-
         const wppNumbers = order.restaurante.telefones.replace(/[^\d,+]/g, '').split(',');
 
-        socket.emit('message', { 
+        wpp.sendMessage({ 
             wppNumbers: wppNumbers, 
             message: setCustomMessage(config.message, order)
         });
