@@ -17,6 +17,12 @@
     "semver": "^7.3.7",
     "venom-bot": "github:renandecarlo/venom"
   },
+  "overrides": {
+    "chalk": "4.1.2",
+    "dotenv": "14.3.2",
+    "node-fetch": "2.6.7",
+    "ora": "5.4.1"
+  },
   "pkg": {
     "assets": [
       "node_modules/**/*.*",
