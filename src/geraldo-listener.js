@@ -79,7 +79,7 @@ if(!module.parent || !module.parent.signedin) {
             await page.type('input[name=senha]', config.password);
     
             await page.click('[type=submit]');
-    
+
             await page.waitForSelector('.user-header-detail');
         } catch (e) {
             console.log(chalk.redBright('-> Não foi possível fazer o login.'), e);
@@ -103,15 +103,18 @@ if(!module.parent || !module.parent.signedin) {
                 }
 
                 try {
-                let text = await response.text();
+                    let text = await response.text();
 
                     if(text) {
                         orders = JSON.parse(text);
                         parseOrders();
+
+                        /* Refresh page every few minutes to avoid visually stuck orders. Do it here to avoid reload breaking order refresh */
+                        reloadPage();
                     }
-                    } catch(e) {
+                } catch(e) {
                     console.log(chalk.redBright('-> Não foi possível ler os dados dos pedidos.'), e, response);
-                    }
+                }
             }
         })
     }
@@ -140,6 +143,16 @@ if(!module.parent || !module.parent.signedin) {
             if(order.status == 1)
                 checkOrder(order);
         })
+    }
+
+    /* Reload page every few minutes */
+    let lastReload = null;
+    const reloadPage = async () => {
+        if(Date.now() - lastReload > 1000 * 60 * 5) {
+            await page.reload();
+
+            lastReload = Date.now();
+        }
     }
 
 
