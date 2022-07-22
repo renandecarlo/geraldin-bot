@@ -32,7 +32,7 @@ O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você 
 ### Modo fácil
 Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 
-1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v2.0-beta/geraldin-bot.v2.0.0-beta.zip) para fazer o download do programa e descompacte o arquivo.
+1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/download/v3.0-beta/geraldin-bot.v3.0.0-beta.zip) para fazer o download do programa e descompacte o arquivo.
 2. Abra o arquivo `.env.ini` no Bloco de Notas ou WordPad e altere as configurações necessárias
 3. Inicie o programa abrindo o arquivo `geraldin-bot.exe`
 4. Leia o QRCode pelo WhatsApp (no celular) indo em Menu > Aparelhos conectados > Conectar um aparelho
@@ -66,6 +66,19 @@ Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 | | | `%restaurante%` - Nome do restaurante parceiro |
 | | | `%fominha%` - Nome completo do fominha |
 | | | `%fominha_n_pedidos%` - Nº de pedidos do fominha |
+
+## Opções avançadas
+| config | descrição | opções |
+|--|--|--|
+| **ENVIA_MSG_OUTROS_TELEFONES** | Habilita o envio de mensagens para os "outros telefones" | `0 = desativado, 1 = ativado`|
+| **ENVIA_MSG_SOMENTE_OUTROS_TELEFONES** | Envia mensagem SOMENTE para os "outros telefones" | `0 = desativado, 1 = ativado`|
+| **FILTRO_TELEFONES** | Uma lista de telefones que não serão enviadas mensagens. | Ex: `(99) 98765-4321,44 2222-2222,88977776666`|
+| **FILTRO_LOJAS_ID** | Uma lista de IDs de lojas que não serão enviadas mensagens. | Ex: `9999999,9999998,9999997`|
+| **NOTIFICA_CM** | Habilita a opção de enviar uma mensagem de volta para o CM quando o pedido atrasar por determinado tempo. | `0 = desativado, 1 = ativado`|
+| **NOTIFICA_CM_TEMPO** | Aguardar quanto tempo *(em minutos)* para enviar a mensagem para o CM depois do pedido chegar. | Ex: `6`, `8`, `10` (minutos)|
+| **NOTIFICA_CM_NUMEROS** | Um número ou uma lista de números que serão notificados. | Ex: `(88) 97654-3210,44 3333-3333,77966665555` |
+| **NOTIFICA_CM_MSG** | Mensagem que será usada para notificar o CM. Também pode ser personalizada com os mesmos códigos da **MENSAGEM**. | |
+
 
 ## Bugs conhecidos
 Por enquanto...
