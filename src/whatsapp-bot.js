@@ -49,8 +49,8 @@ const sendMessage = async data => {
 			if(!result.erro) {
 				console.log(chalk.greenBright.inverse('-> Enviado!'), [ result.status, wppNumber ] )
 				
-				/* Send to everyone if enabled, break otherwise. */
-				if(!config.sendToEveryone)
+				/* Send to everyone if enabled or if it's a partner notification msg, break otherwise. */
+				if(!config.sendToEveryone && !data.notifyPartnerMsg)
 					break;
 			}
 		} catch (error) {

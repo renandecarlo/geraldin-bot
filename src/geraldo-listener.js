@@ -240,9 +240,10 @@ if(!module.parent || !module.parent.signedin) {
     const sendPartnerMessage = order => {
         const wppNumbers = config.notifyPartnerNumbers?.replace(/[^\d,+]/g, '').split(',');
 
-        wpp.sendMessage({ 
+        wpp.sendMessage({
             wppNumbers: wppNumbers, 
-            message: setCustomMessage(config.notifyPartnerMsg, order)
+            message: setCustomMessage(config.notifyPartnerMsg, order),
+            notifyPartnerMsg: true
         });
     }
 
