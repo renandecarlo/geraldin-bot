@@ -12,6 +12,7 @@ const config = {
     waitFor:            process.env.ESPERA_PRIMEIRA_MSG * 60 * 1000,
     waitForBetween:     process.env.ESPERA_ENTRE_MSG * 60 * 1000,
     maxMsgs:            parseInt(process.env.LIMITE_DE_MSGS),
+    sendToExtraNumbers:	process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
     headless:           process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
     message:            process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
 };
@@ -156,7 +157,14 @@ if(!module.parent || !module.parent.signedin) {
 
     /* Send message if order is waiting for too long */
     const sendMessage = order => {
-        const wppNumbers = order.restaurante.telefones.replace(/[^\d,+]/g, '').split(',');
+        let numbers;
+
+        if(config.sendToExtraNumbers)
+            numbers = order.restaurante.telefones_celulares;
+        else
+            numbers = order.restaurante.telefones;
+
+        const wppNumbers = numbers.replace(/[^\d,+]/g, '').split(',');
 
         wpp.sendMessage({ 
             wppNumbers: wppNumbers, 
