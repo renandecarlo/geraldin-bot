@@ -5,7 +5,7 @@ const venom = require('venom-bot');
 const config = {
     headless: 			process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true,
 	sendToEveryone:		process.env.ENVIA_MSG_TODOS_NUMEROS == '1' ? true : false,
-	numbersToFilter:	process.env.FILTRO_TELEFONES,
+	numbersToFilter:	process.env.FILTRO_TELEFONES || '',
 };
 
 /* Check if user is signed in */

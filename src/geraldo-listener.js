@@ -14,7 +14,7 @@ const config = {
     maxMsgs:                parseInt(process.env.LIMITE_DE_MSGS),
     sendToExtraNumbers:	    process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
     sendOnlyToExtraNumbers:	process.env.ENVIA_MSG_SOMENTE_OUTROS_TELEFONES == '1' ? true : false,
-    sellersToFilter:        process.env.FILTRO_LOJAS_ID,
+    sellersToFilter:        process.env.FILTRO_LOJAS_ID || '',
     notifyPartner:          process.env.NOTIFICA_CM == '1' ? true : false,
     notifyPartnerWaitFor:   process.env.NOTIFICA_CM_TEMPO * 60 * 1000,
     notifyPartnerNumbers:   process.env.NOTIFICA_CM_NUMEROS,
