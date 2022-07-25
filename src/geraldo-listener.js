@@ -7,20 +7,21 @@ const ChromeLauncher = require('chrome-launcher');
 const wpp = require('./whatsapp-bot');
 
 const config = {
-    user:                   process.env.USUARIO,
-    password:               process.env.SENHA,
-    waitFor:                process.env.ESPERA_PRIMEIRA_MSG * 60 * 1000,
-    waitForBetween:         process.env.ESPERA_ENTRE_MSG * 60 * 1000,
-    maxMsgs:                parseInt(process.env.LIMITE_DE_MSGS),
-    sendToExtraNumbers:	    process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
-    sendOnlyToExtraNumbers:	process.env.ENVIA_MSG_SOMENTE_OUTROS_TELEFONES == '1' ? true : false,
-    sellersToFilter:        process.env.FILTRO_LOJAS_ID || '',
-    notifyPartner:          process.env.NOTIFICA_CM == '1' ? true : false,
-    notifyPartnerWaitFor:   process.env.NOTIFICA_CM_TEMPO * 60 * 1000,
-    notifyPartnerNumbers:   process.env.NOTIFICA_CM_NUMEROS,
-    notifyPartnerMsg:       process.env.NOTIFICA_CM_MSG || '🚨 Atenção, o *%restaurante%* tem um pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*!',
-    headless:               process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
-    message:                process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
+    user:                           process.env.USUARIO,
+    password:                       process.env.SENHA,
+    waitFor:                        process.env.ESPERA_PRIMEIRA_MSG * 60 * 1000,
+    waitForBetween:                 process.env.ESPERA_ENTRE_MSG * 60 * 1000,
+    maxMsgs:                        parseInt(process.env.LIMITE_DE_MSGS),
+    sendToExtraNumbers:	            process.env.ENVIA_MSG_OUTROS_TELEFONES == '1' ? true : false,
+    sendOnlyToExtraNumbers:	        process.env.ENVIA_MSG_SOMENTE_OUTROS_TELEFONES == '1' ? true : false,
+    sellersToFilter:                process.env.FILTRO_LOJAS_ID || '',
+    notifyPartner:                  process.env.NOTIFICA_CM == '1' ? true : false,
+    notifyPartnerWaitFor:           process.env.NOTIFICA_CM_TEMPO * 60 * 1000,
+    notifyPartnerWaitForBetween:    process.env.NOTIFICA_CM_TEMPO_ENTRE_MSG * 60 * 1000,
+    notifyPartnerNumbers:           process.env.NOTIFICA_CM_NUMEROS,
+    notifyPartnerMsg:               process.env.NOTIFICA_CM_MSG || '🚨 Atenção, o *%restaurante%* tem um pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*!',
+    headless:                       process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
+    message:                        process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
 };
 
 /* Check if user is signed in */
@@ -169,7 +170,7 @@ if(!module.parent || !module.parent.signedin) {
     /* Check if orders are old enough */
     let sentMessagesDate = {};
     let sentMessagesCount = {};
-    let partnerMessageSent = false;
+    let partnerSentMessagesDate = {};
     const checkOrder = order => {
 
         /* Send message if order is old enough */
@@ -191,9 +192,11 @@ if(!module.parent || !module.parent.signedin) {
 
         /* Also send the partner a message if it's old enough */
         if(config.notifyPartner)
-            if(!partnerMessageSent && Date.now() - Date.parse(order.created) > config.notifyPartnerWaitFor) {
-                if(sendPartnerMessage(order))
-                    partnerMessageSent = true;
+            if(Date.now() - Date.parse(order.created) > config.notifyPartnerWaitFor) {
+                if(!partnerSentMessagesDate[order.id] || Date.now() - partnerSentMessagesDate[order.id] > config.notifyPartnerWaitForBetween) {   
+                    if(sendPartnerMessage(order))
+                        partnerSentMessagesDate[order.id] = Date.now();
+                }
             }
     }
 
