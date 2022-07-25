@@ -147,11 +147,11 @@ if(!module.parent || !module.parent.signedin) {
     /* Parse orders */
     const parseOrders = () => {
         Object.values(orders).forEach(order => {
-            order.status == 1 && console.log(chalk.yellow.inverse('-> Pedido não lido identificado'), chalk.yellowBright(order.usuario.nome_completo, order.id, order.restaurante.nome, getOrderSellerNumbers(order)));
-            
             /* Order is waiting */
-            if(order.status == 1)
+            if(order.status == 1) {
+                console.log(chalk.yellow.inverse('-> Pedido não lido identificado'), chalk.yellowBright(order.usuario.nome_completo, order.id, order.restaurante.nome, getOrderSellerNumbers(order)));
                 checkOrder(order);
+            }
         })
     }
 
