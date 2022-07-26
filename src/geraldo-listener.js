@@ -194,6 +194,8 @@ if(!module.parent || !module.parent.signedin) {
         if(config.notifyPartner)
             if(Date.now() - Date.parse(order.created) > config.notifyPartnerWaitFor) {
                 if(!partnerSentMessagesDate[order.id] || Date.now() - partnerSentMessagesDate[order.id] > config.notifyPartnerWaitForBetween) {   
+                    console.log(chalk.green('-> Enviando mensagem de alerta ao CM...'));
+
                     if(await sendPartnerMessage(order))
                         partnerSentMessagesDate[order.id] = Date.now();
                 }
