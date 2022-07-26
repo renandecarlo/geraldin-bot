@@ -14,8 +14,8 @@ if(!module.parent || !module.parent.signedin) {
 	console.log(chalk.bgRedBright('-> Não foi possível verificar a assinatura'));
 
 	Sentry.close(2000).then(() => {
-	process.exit();
-    });
+		process.exit();
+	});
 }
 
 /* Handle browser exit */
@@ -24,7 +24,7 @@ const handleSession = (statusSession, session) => {
 		io.close();
 		
 		Sentry.close(2000).then(() => {
-		process.exit();
+			process.exit();
 		});
 	}
 }
@@ -133,6 +133,14 @@ let client;
 	/* Start venom browser */
 	try {
 		client = await venom.create('geraldo-bot', false, handleSession, { headless: config.headless, multidevice: true, autoClose: false })
+
+		client.page.on('close', () => {
+			console.err(chalk.bgRedBright('-> O navegador do WhatsApp Web foi fechado. Encerrando programa...'));
+			
+			Sentry.close(2000).then(() => {
+				process.exit();
+			});
+		});
 	} catch(e) {
 		console.err(chalk.bgRedBright('-> Não foi possível inicializar o Whatsapp Web', e));
 	}
