@@ -19,6 +19,7 @@ const config = {
     notifyPartnerWaitFor:           process.env.NOTIFICA_CM_TEMPO * 60 * 1000,
     notifyPartnerWaitForBetween:    process.env.NOTIFICA_CM_TEMPO_ENTRE_MSG * 60 * 1000,
     notifyPartnerNumbers:           process.env.NOTIFICA_CM_NUMEROS,
+    notifyPartnerSendContactCard:   process.env.NOTIFICA_CM_ENVIA_CONTATO == '1' ? true : false,
     notifyPartnerMsg:               process.env.NOTIFICA_CM_MSG || '🚨 Atenção, o *%restaurante%* tem um pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*!',
     headless:                       process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
     message:                        process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀'
@@ -250,6 +251,38 @@ if(!module.parent || !module.parent.signedin) {
             message: setCustomMessage(config.notifyPartnerMsg, order),
             notifyPartnerMsg: true
         });
+
+        /* Send seller's contact card if option enabled */
+        if(msg)
+            if(config.notifyPartnerSendContactCard)
+                sendContactVcard(order, wppNumbers);
+
+        return msg;
+    }
+
+    /* Send a contact vcard */
+    const sendContactVcard = async (order, wppNumbers) => {
+        let contacts;
+
+        /* Get seller's numbers */
+        const numbers = getOrderSellerNumbers(order);
+        const sellerWppNumbers = numbers.replace(/[^\d,+]/g, '').split(',');
+
+        /* Get possible seller's wpp numbers from user's contact list */
+        contacts = await wpp.getUserContacts(sellerWppNumbers);
+
+        /* If there aren't any, send the first seller's valid wpp number */
+        if(!contacts?.length)
+            contacts = await wpp.getValidNumber(sellerWppNumbers);
+
+        if(contacts?.length)
+            return await wpp.sendContactVcard({
+                wppNumbers: wppNumbers, 
+                contactNumber: contacts[0],
+                contactName: order.restaurante.nome
+            });
+        else
+            console.log(chalk.redBright('-> Cartão de contato não enviado. Restaurante não possui número com WhatsApp.'), [ order.restaurante.id, order.restaurante.nome ] );
     }
 
     /* Replace custom message details */

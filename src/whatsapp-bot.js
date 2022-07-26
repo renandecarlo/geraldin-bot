@@ -22,6 +22,62 @@ const handleSession = (statusSession, session) => {
 	}
 }
 
+/* Get user wpp contacts between given numbers */
+const getUserContacts = async wppNumbers => {
+	if(!client) return;
+	
+	const contacts = [];
+	try {
+		const userContacts = await client.getAllContacts();
+			
+		for(contact of userContacts) {
+			if(contact.isMyContact)
+				for(const wppNumber of wppNumbers) {
+					if(contact.id.user == `55${wppNumber}`)
+						contacts.push(wppNumber);
+				}
+		}
+	} catch { /* Fail silently */ }
+	
+	return contacts;
+}
+
+/* Get valid wpp numbers between given numbers */
+const getValidNumber = async wppNumbers => {
+	if(!client) return;
+
+	const contacts = [];
+	for(wppNumber of wppNumbers) {
+		try {
+			const contact = await client.checkNumberStatus(`55${wppNumber}@c.us`);
+
+			if(contact.status == 200)
+				contacts.push(wppNumber);
+
+		} catch { /* Fail silently */ }
+	}
+
+	return contacts;
+}
+
+/* Send a contact vcard to desired data.wppNumbers */
+const sendContactVcard = async data => {
+	if(!client) return;
+
+	for(const wppNumber of data.wppNumbers) {
+		try {
+			const result = await client.sendContactVcard(`55${wppNumber}@c.us`, `55${data.contactNumber}@c.us`, data.contactName);
+
+			if(!result.erro)
+				console.log(chalk.greenBright.inverse('-> Cartão de contato enviado!'), [ result.status, wppNumber ] )
+
+		} catch(error) {
+			console.log(chalk.redBright('-> Não foi possível enviar o cartão de contato.'), [ error.status, wppNumber, error.text ] );
+		}
+	}
+
+	return true;
+}
 
 /* Send message to desired data.wppNumbers */
 const sendMessage = async data => {
@@ -75,4 +131,9 @@ let client;
 	}
 })()
 
-module.exports = { sendMessage }
+module.exports = {
+	sendMessage, 
+	getUserContacts, 
+	getValidNumber, 
+	sendContactVcard 
+}
