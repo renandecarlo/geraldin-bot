@@ -135,7 +135,7 @@ let client;
 		client = await venom.create('geraldo-bot', false, handleSession, { headless: config.headless, multidevice: true, autoClose: false })
 
 		client.page.on('close', () => {
-			console.err(chalk.bgRedBright('-> O navegador do WhatsApp Web foi fechado. Encerrando programa...'));
+			console.log(chalk.bgRedBright('-> O navegador do WhatsApp Web foi fechado. Encerrando programa...'));
 			
 			Sentry.close(8000).then(() => {
 				process.exit();

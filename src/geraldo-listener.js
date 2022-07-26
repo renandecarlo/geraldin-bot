@@ -55,7 +55,7 @@ if(!module.parent || !module.parent.signedin) {
 
     /* Handle browser exit */
     page.on('close', msg => {
-        console.err(chalk.bgRedBright('-> O navegador do Geraldo foi fechado. Encerrando programa...', msg));
+        console.log(chalk.bgRedBright('-> O navegador do Geraldo foi fechado. Encerrando programa...', msg));
         
         Sentry.close(8000).then(() => {
             process.exit();
