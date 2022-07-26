@@ -21,8 +21,6 @@ if(!module.parent || !module.parent.signedin) {
 /* Handle browser exit */
 const handleSession = (statusSession, session) => {
 	if(statusSession == 'browserClose') {
-		io.close();
-		
 		Sentry.close(8000).then(() => {
 			process.exit();
 		});
