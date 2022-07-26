@@ -1,6 +1,7 @@
 const dotenv = require('dotenv').config({ path: './.env.ini' });
 const chalk = require('chalk');
 const venom = require('venom-bot');
+const Sentry = require("@sentry/node");
 
 const config = {
     headless: 			process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true,
@@ -11,14 +12,20 @@ const config = {
 /* Check if user is signed in */
 if(!module.parent || !module.parent.signedin) {
 	console.log(chalk.bgRedBright('-> Não foi possível verificar a assinatura'));
+
+	Sentry.close(2000).then(() => {
 	process.exit();
+    });
 }
 
 /* Handle browser exit */
 const handleSession = (statusSession, session) => {
 	if(statusSession == 'browserClose') {
 		io.close();
+		
+		Sentry.close(2000).then(() => {
 		process.exit();
+		});
 	}
 }
 
@@ -127,7 +134,7 @@ let client;
 	try {
 		client = await venom.create('geraldo-bot', false, handleSession, { headless: config.headless, multidevice: true, autoClose: false })
 	} catch(e) {
-		console.log(chalk.bgRedBright('-> Não foi possível inicializar o Whatsapp Web', e));
+		console.err(chalk.bgRedBright('-> Não foi possível inicializar o Whatsapp Web', e));
 	}
 })()
 

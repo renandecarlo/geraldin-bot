@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const auth = require('./auth');
 const readline = require('readline');
 const checkUpdate = require('./check-update');

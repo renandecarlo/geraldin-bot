@@ -1,5 +1,6 @@
 const dotenv = require('dotenv').config({ path: './.env.ini' });
 const chalk = require('chalk');
+const Sentry = require("@sentry/node");
 
 const puppeteer = require('puppeteer');
 const ChromeLauncher = require('chrome-launcher');
@@ -27,8 +28,11 @@ const config = {
 
 /* Check if user is signed in */
 if(!module.parent || !module.parent.signedin) {
-    console.log(chalk.bgRedBright('-> Não foi possível verificar a assinatura'));
+    console.err(chalk.bgRedBright('-> Não foi possível verificar a assinatura'));
+
+    Sentry.close(2000).then(() => {
     process.exit();
+    });
 }
 
 (async () => {
@@ -51,7 +55,9 @@ if(!module.parent || !module.parent.signedin) {
 
     /* Handle browser exit */
     page.on('close', msg => {
+        Sentry.close(2000).then(() => {
         process.exit();
+        });
     });
 
     /* Check if user is logged in */
@@ -327,7 +333,7 @@ if(!module.parent || !module.parent.signedin) {
             await refreshOrders();
         }, 1000 * 60);
     } catch (e) {
-        console.log(chalk.bgRedBright('-> Erro', e));
+        console.err(chalk.bgRedBright('-> Erro', e));
     }
 
     // await browser.close();

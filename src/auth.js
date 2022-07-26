@@ -25,8 +25,12 @@ class Auth {
 
             /* Check if user has valid subscription */
             if(data.error == true || data.credentials == 'invalid') {
-                spinner.fail(`Não encontrei uma assinatura válida para o usuário `+ chalk.blueBright(config.user) +`\n`);
-                console.error(data);
+                const msg = `Não encontrei uma assinatura válida para o usuário `+ chalk.blueBright(config.user) +`\n`;
+
+                spinner.fail(msg);
+
+                console.info(data); /* Show returned error data */
+                console.msg(msg, data); /* Log */
 
                 return false;
             }
@@ -36,7 +40,10 @@ class Auth {
 
             return true;
         } catch(e) {
-            spinner.fail(chalk.redBright('Não foi possível verificar a assinatura no momento. Tente mais tarde. \n'));
+            const msg = chalk.redBright('Não foi possível verificar a assinatura no momento. Tente mais tarde. \n');
+
+            spinner.fail(msg);
+            console.silent(msg);
 
             return false;
         }

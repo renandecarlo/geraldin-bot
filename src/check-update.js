@@ -26,7 +26,10 @@ const checkUpdate = async () => {
             spinner.succeed(`Você está na última versão: v${package.version}`);
 
     } catch(error) {
-        spinner.fail(chalk.redBright('Não foi possível verificar a atualização.', [ error.code, error.message ]));
+        const msg = chalk.redBright('Não foi possível verificar a atualização.', [ error.code, error.message ]);
+
+        spinner.fail(msg);
+        console.silent(msg);
     }
 }
 
