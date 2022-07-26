@@ -13,7 +13,7 @@ const config = {
 if(!module.parent || !module.parent.signedin) {
 	console.log(chalk.bgRedBright('-> Não foi possível verificar a assinatura'));
 
-	Sentry.close(2000).then(() => {
+	Sentry.close(8000).then(() => {
 		process.exit();
 	});
 }
@@ -23,7 +23,7 @@ const handleSession = (statusSession, session) => {
 	if(statusSession == 'browserClose') {
 		io.close();
 		
-		Sentry.close(2000).then(() => {
+		Sentry.close(8000).then(() => {
 			process.exit();
 		});
 	}
@@ -137,7 +137,7 @@ let client;
 		client.page.on('close', () => {
 			console.err(chalk.bgRedBright('-> O navegador do WhatsApp Web foi fechado. Encerrando programa...'));
 			
-			Sentry.close(2000).then(() => {
+			Sentry.close(8000).then(() => {
 				process.exit();
 			});
 		});

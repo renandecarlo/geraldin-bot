@@ -30,7 +30,7 @@ const config = {
 if(!module.parent || !module.parent.signedin) {
     console.err(chalk.bgRedBright('-> Não foi possível verificar a assinatura'));
 
-    Sentry.close(2000).then(() => {
+    Sentry.close(8000).then(() => {
         process.exit();
     });
 }
@@ -57,7 +57,7 @@ if(!module.parent || !module.parent.signedin) {
     page.on('close', msg => {
         console.err(chalk.bgRedBright('-> O navegador do Geraldo foi fechado. Encerrando programa...', msg));
         
-        Sentry.close(2000).then(() => {
+        Sentry.close(8000).then(() => {
             process.exit();
         });
     });
