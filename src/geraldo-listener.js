@@ -171,7 +171,7 @@ if(!module.parent || !module.parent.signedin) {
     let sentMessagesDate = {};
     let sentMessagesCount = {};
     let partnerSentMessagesDate = {};
-    const checkOrder = order => {
+    const checkOrder = async order => {
 
         /* Send message if order is old enough */
         if(Date.now() - Date.parse(order.created) > config.waitFor)
@@ -179,7 +179,7 @@ if(!module.parent || !module.parent.signedin) {
                 if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
                     console.log(chalk.green('-> O pedido está esperando por muito tempo. Enviando mensagem...'));
                     
-                    if(sendMessage(order)) {
+                    if(await sendMessage(order)) {
                         sentMessagesDate[order.id] = Date.now();
 
                         if(!sentMessagesCount[order.id])
@@ -194,7 +194,7 @@ if(!module.parent || !module.parent.signedin) {
         if(config.notifyPartner)
             if(Date.now() - Date.parse(order.created) > config.notifyPartnerWaitFor) {
                 if(!partnerSentMessagesDate[order.id] || Date.now() - partnerSentMessagesDate[order.id] > config.notifyPartnerWaitForBetween) {   
-                    if(sendPartnerMessage(order))
+                    if(await sendPartnerMessage(order))
                         partnerSentMessagesDate[order.id] = Date.now();
                 }
             }
@@ -223,7 +223,7 @@ if(!module.parent || !module.parent.signedin) {
     }
 
     /* Send message if order is waiting for too long */
-    const sendMessage = order => {
+    const sendMessage = async order => {
         /* Check if seller is in filter list */
         if(filteredSeller(order.restaurante.id)) {
             console.log(chalk.redBright('-> O restaurante está bloqueado no filtro. A mensagem não será enviada.'), [ order.restaurante.id, order.restaurante.nome ] );
@@ -233,17 +233,17 @@ if(!module.parent || !module.parent.signedin) {
         const numbers = getOrderSellerNumbers(order);
         const wppNumbers = numbers.replace(/[^\d,+]/g, '').split(',');
 
-        return wpp.sendMessage({ 
+        return await wpp.sendMessage({ 
             wppNumbers: wppNumbers, 
             message: setCustomMessage(config.message, order)
         });
     }
 
     /* Send a message back to the partner if order is waiting for too long */
-    const sendPartnerMessage = order => {
+    const sendPartnerMessage = async order => {
         const wppNumbers = config.notifyPartnerNumbers?.replace(/[^\d,+]/g, '').split(',');
 
-        return wpp.sendMessage({
+        const msg = await wpp.sendMessage({
             wppNumbers: wppNumbers, 
             message: setCustomMessage(config.notifyPartnerMsg, order),
             notifyPartnerMsg: true
