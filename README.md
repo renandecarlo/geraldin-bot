@@ -76,6 +76,8 @@ Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 | **FILTRO_LOJAS_ID** | Uma lista de IDs de lojas que não serão enviadas mensagens. | Ex: `9999999,9999998,9999997`|
 | **NOTIFICA_CM** | Habilita a opção de enviar uma mensagem de volta para o CM quando o pedido atrasar por determinado tempo. | `0 = desativado, 1 = ativado`|
 | **NOTIFICA_CM_TEMPO** | Aguardar quanto tempo *(em minutos)* para enviar a mensagem para o CM depois do pedido chegar. | Ex: `6`, `8`, `10` (minutos)|
+| **NOTIFICA_CM_TEMPO_ENTRE_MSG** | Quanto tempo (em minutos) esperar para enviar outra mensagem, caso o pedido ainda não tenha sido lido. | Ex: `2`, `4`, `6` (minutos)|
+| **NOTIFICA_CM_ENVIA_CONTATO** | Envia o contato de WhatsApp do restaurante para o CM. O bot dará prioridade aos números já salvos na agenda, e depois seguirá pela ordem dos telefones no Geraldo. | `0 = desativado, 1 = ativado` |
 | **NOTIFICA_CM_NUMEROS** | Um número ou uma lista de números que serão notificados. | Ex: `(88) 97654-3210,44 3333-3333,77966665555` |
 | **NOTIFICA_CM_MSG** | Mensagem que será usada para notificar o CM. Também pode ser personalizada com os mesmos códigos da **MENSAGEM**. | |
 
