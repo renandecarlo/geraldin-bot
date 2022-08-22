@@ -46,6 +46,7 @@ if(!module.parent || !module.parent.signedin) {
     /* Check if user is logged in */
     const isLoggedIn = async () => {
         try {
+            if(!await page.$('.user-header-detail'))
             await page.goto(`${baseUrl}/pedidos`);
 
             if(await page.$('.user-header-detail')) {
