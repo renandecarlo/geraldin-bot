@@ -1,13 +1,8 @@
-const dotenv = require('dotenv').config({ path: './.env.ini' });
 const chalk = require('chalk');
 const venom = require('venom-bot');
 const Sentry = require("@sentry/node");
 
-const config = {
-    headless: 			process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true,
-	sendToEveryone:		process.env.ENVIA_MSG_TODOS_NUMEROS == '1' ? true : false,
-	numbersToFilter:	process.env.FILTRO_TELEFONES || '',
-};
+const config = require('./config');
 
 /* Check if user is signed in */
 if(!module.parent || !module.parent.signedin) {

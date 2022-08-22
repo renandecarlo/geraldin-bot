@@ -4,13 +4,7 @@ const ora = require('ora');
 const fetch = require('node-fetch');
 const path = require('path');
 
-dotenv.config({ path: './.env.ini' });
-dotenv.config({ path: path.join(__dirname, '../', '.env.build') }); /* Load build settings if available */
-
-const config = {
-    user: process.env.USUARIO,
-    apiEndpoint: process.env.API_ENDPOINT
-};
+const config = require('./config');
 
 class Auth {
     async signin() {

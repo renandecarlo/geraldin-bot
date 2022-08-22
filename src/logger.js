@@ -4,8 +4,7 @@ const util = require('util');
 const path = require('path');
 const package = require('../package.json');
 
-dotenv.config({ path: './.env.ini' });
-dotenv.config({ path: path.join(__dirname, '../', '.env.build') }); /* Load build settings */
+const config = require('./config');
 
 const winston = require('winston');
 const { combine, timestamp, label, printf } = winston.format;
@@ -15,11 +14,11 @@ const { combine, timestamp, label, printf } = winston.format;
 const Sentry = require("@sentry/node");
 
 Sentry.init({
-    dsn: process.env.SENTRY_ENDPOINT,
+    dsn: config.sentryEndpoint,
     release: package.version,
     tracesSampleRate: 1.0,
     initialScope: {
-        user: { id: process.env.USUARIO },
+        user: { id: config.user },
     },
 });
 
