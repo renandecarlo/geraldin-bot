@@ -78,7 +78,7 @@ const logger = winston.createLogger({
 const injectDate = msg => {
     const date = moment().format('DD/MM HH:mm');
 
-    if(msg.includes && msg.includes('->'))
+    if(msg?.includes && msg.includes('->'))
         msg = msg.replace('->', `[${date}]->`);
 
     return msg;
