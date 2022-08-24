@@ -117,6 +117,11 @@ const sendMessage = async data => {
 	return true;
 }
 
+/* Check current wpp session status */
+const isConnected = () => {
+	if(client) return true;
+}
+
 /**
  * Run
  */
@@ -143,5 +148,6 @@ module.exports = {
 	sendMessage, 
 	getUserContacts, 
 	getValidNumber, 
-	sendContactVcard 
+	sendContactVcard,
+	isConnected,
 }
