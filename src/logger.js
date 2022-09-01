@@ -75,11 +75,11 @@ const logger = winston.createLogger({
 
 
 /* Inject date in log msg */
-const injectDate = msg => {
+const injectDate = (msg, prefix = '') => {
     const date = moment().format('DD/MM HH:mm');
 
     if(msg?.includes && msg.includes('->'))
-        msg = msg.replace('->', `[${date}]->`);
+        msg = msg.replace('->', `[${date}]${prefix}->`);
 
     return msg;
 }
@@ -87,6 +87,21 @@ const injectDate = msg => {
 /* Inject winston and sentry in console.{log,error} methods */
 console.stdlog = console.log.bind(console);
 console.stderr = console.error.bind(console);
+
+/* Like log but with prefix */
+console.plog = function(...args) {
+    /* Log to console */
+    consoleArgs = [ ...args ];
+    consoleArgs[1] = injectDate(consoleArgs[1], consoleArgs[0]);
+    consoleArgs.splice(0, 1); /* Remove prefix from args */
+    
+    console.stdlog.apply(console, consoleArgs);
+
+    /* Log to winston */
+    if(args[0])
+        logger.info(...args);
+}
+
 
 /* Log msg to console+winston */
 console.log = function(...args) {
