@@ -16,7 +16,7 @@ const Sentry = require("@sentry/node");
 Sentry.init({
     dsn: config.sentryEndpoint,
     release: package.version,
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 0.1,
     initialScope: {
         user: { id: config.user },
     },
