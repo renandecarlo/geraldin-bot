@@ -34,6 +34,18 @@ const config = {
 
     /* logger.js */
     sentryEndpoint: process.env.SENTRY_ENDPOINT,
+
+    /* watchdog.js */
+    watchdog: process.env.ANTITROTE == '1' ? true : false,
+    watchdogNotifyPartner: process.env.ANTITROTE_NOTIFICA_CM == '1' ? true : false,
+    watchdogNotifyPartnerNumbers: process.env.ANTITROTE_NOTIFICA_CM_NUMEROS,
+    watchdogNotifyPartnerScore: parseInt(process.env.ANTITROTE_NOTIFICA_CM_SCORE),
+    watchdogNotifyPartnerMsg: process.env.ANTITROTE_NOTIFICA_CM_MSG || '⚠ ATENÇÃO, possível trote! Pedido (#%pedido_n%) com *score de risco %score%*, do fominha *%fominha%* no *%restaurante%*! %detalhes%',
+    watchdogCancelOrders: process.env.ANTITROTE_CANCELA_PEDIDOS == '1' ? true : false,
+    watchdogCancelOrdersScore: parseInt(process.env.ANTITROTE_CANCELA_PEDIDOS_SCORE),
+    watchdogCancelAllOrdersFromUser: process.env.ANTITROTE_CANCELA_TODOS_PEDIDOS_DO_USUARIO == '1' ? true : false,
+    watchdogVerifyAreaCode: process.env.ANTITROTE_VERIFICA_DDD == '1' ? true : false,
+    watchdogValidAreaCodes: process.env.ANTITROTE_DDDS_VALIDOS,
 };
 
 module.exports = config;
