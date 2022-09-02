@@ -46,6 +46,8 @@ if(!module.parent || !module.parent.signedin) {
             if(!page.url().includes('/login')) /* Go to login page if not already */
                 await page.goto(`${baseUrl}/login`);
             
+        await page.bringToFront();
+        
             await page.type('input[name=login]', config.user);
             await page.type('input[name=senha]', config.password);
     
