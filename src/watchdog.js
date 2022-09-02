@@ -728,7 +728,7 @@ class Watchdog {
     /* Cancel user order */
     async cancelOrder(order) {
         if(!order) return;
-        if(order.status == 0) return; /* Already canceled */
+        if(order.status == 0 || order.status == 2) return; /* Already canceled */
 
         /* Disable timeouts that might interfere with canceling */
         clearTimeout(this.disableMonitoringTimeout);
