@@ -118,13 +118,13 @@ const refreshOrders = async () => {
 const parseOrders = async () => {
     Object.values(orders).forEach(async order => {
         /* Add order to watchdog, if enabled */
-        if(config.watchdog && watchdog.ready) {
+        if(config.watchdog && watchdog?.ready) {
             await watchdog.addOrder(order);
         }
 
         /* Order is waiting */
         if(order.status == 1) {
-            console.log(chalk.yellow.inverse('-> Pedido não lido identificado'), watchdog.ready ? chalk.bgMagenta('Risco:', watchdog.orders[order.id].score) : '', chalk.yellowBright(order.usuario.nome_completo, order.id, order.restaurante.nome, getOrderSellerNumbers(order)));
+            console.log(chalk.yellow.inverse('-> Pedido não lido identificado'), watchdog?.ready ? chalk.bgMagenta('Risco:', watchdog.orders[order.id].score) : '', chalk.yellowBright(order.usuario.nome_completo, order.id, order.restaurante.nome, getOrderSellerNumbers(order)));
             await checkOrder(order);
         }
     })
