@@ -307,7 +307,10 @@ class Watchdog {
 
         for(const key in data) {
             const entry = data[key];
-            const msg = `\n_- ${entry.msg} (${entry.pts}pts, peso ${entry.weight})_`;
+
+            if(entry.pts > 0) entry.pts = `+${entry.pts}`; /* Add + to the msg if positive pts */
+
+            const msg = `\n_- ${entry.msg} (risco ${entry.pts}, peso ${entry.weight})_`;
             entries.push(msg);
         }
 
