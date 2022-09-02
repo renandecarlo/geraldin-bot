@@ -6,6 +6,7 @@ dotenv.config({ path: path.join(__dirname, '../', '.env.build') }); /* Load buil
 
 const config = {
     /* geraldo-listener.js */
+    notifySellers:                  process.env.NOTIFICA_SELLER,
     user:                           process.env.USUARIO,
     password:                       process.env.SENHA,
     waitFor:                        process.env.ESPERA_PRIMEIRA_MSG * 60 * 1000,

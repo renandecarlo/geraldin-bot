@@ -170,6 +170,7 @@ if(!module.parent || !module.parent.signedin) {
                 if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
                     console.log(chalk.green('-> O pedido está esperando por muito tempo. Enviando mensagem...'));
                     
+                if(config.notifySellers)
                     if(await sendMessage(order)) {
                         sentMessagesDate[order.id] = Date.now();
 
