@@ -389,8 +389,10 @@ class Watchdog {
         }
 
         /* Add repeated user count after loop to avoid duplicated entries */
-        const tmpMsg = sprintf(msg, repeatedUserCount, `do mesmo fominha *${order.usuario.nome_completo}*`);
-        this.addUntrustedEntry(order.id, tmpMsg, pts * repeatedUserCount, weight * repeatedUserCount);
+        if(repeatedUserCount > 1) {
+            const tmpMsg = sprintf(msg, repeatedUserCount, `do mesmo fominha *${order.usuario.nome_completo}*`);
+            this.addUntrustedEntry(order.id, tmpMsg, pts * repeatedUserCount, weight * repeatedUserCount);
+        }
 
         this.checkUserTotalOrders(totalOrders, order);
     }
