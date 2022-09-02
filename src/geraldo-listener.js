@@ -16,32 +16,8 @@ if(!module.parent || !module.parent.signedin) {
     });
 }
 
-(async () => {
     /* Base url */
     const baseUrl = 'https://geraldo.aiqfome.com';
-
-    /* Set up browser */
-    const chromePath = ChromeLauncher.Launcher.getInstallations()[0];
-    const browser = await puppeteer.launch({ 
-        defaultViewport: null,
-        headless: config.headless,
-        args: ['--mute-audio'],
-        executablePath: chromePath
-    });
-    const page = await browser.newPage();
-
-    /* Avoid notification permission dialog */
-    const context = browser.defaultBrowserContext();
-    await context.overridePermissions(baseUrl, []);
-
-    /* Handle browser exit */
-    page.on('close', msg => {
-        console.log(chalk.bgRedBright('-> O navegador do Geraldo foi fechado. Encerrando programa...', msg));
-        
-        Sentry.close(8000).then(() => {
-            process.exit();
-        });
-    });
 
     /* Check if user is logged in */
     const isLoggedIn = async () => {
@@ -296,6 +272,36 @@ if(!module.parent || !module.parent.signedin) {
         return msg;
     }
 
+let page;
+let watchdog;
+(async () => {
+    /* Set up browser */
+    const chromePath = ChromeLauncher.Launcher.getInstallations()[0];
+    const browser = await puppeteer.launch({
+        // devtools: true,
+        defaultViewport: null,
+        headless: config.headless,
+        args: ['--mute-audio'],
+        executablePath: chromePath
+    });
+    
+    /* Use current page instead of opening a new one */
+    const pages = await browser.pages();
+    page = pages[0] || await browser.newPage();
+
+    /* Avoid notification permission dialog */
+    const context = browser.defaultBrowserContext();
+    await context.overridePermissions(baseUrl, []);
+
+    /* Handle browser exit */
+    page.on('close', msg => {
+        console.log(chalk.bgRedBright('-> O navegador do Geraldo foi fechado. Encerrando programa...', msg));
+        
+        Sentry.close(8000).then(() => {
+            process.exit();
+        });
+    });
+
     /**
      * Run
      */
@@ -322,4 +328,6 @@ if(!module.parent || !module.parent.signedin) {
     }
 
     // await browser.close();
-})()
+})();
+
+module.exports = { isLoggedIn, login, setCustomMessage, baseUrl }
