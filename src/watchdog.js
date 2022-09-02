@@ -446,10 +446,20 @@ class Watchdog {
         const weightOlderUser = 1;
         const weightNewUser = 3;
         let pts = 60;
+        let ptsEase;
 
         const userCreatedDate = new Date(order.usuario.virtual_created);
         const daysDiff = Math.floor((new Date - userCreatedDate) / 60 / 60 / 24 / 1000);
-        const ptsEase = daysDiff * -5; /* Ease the points each day the user is registered */
+
+        /* Ease the points each day the user is registered. Higher on the first 3 days */
+        if(daysDiff >= 0 && daysDiff <= 3)
+            ptsEase = daysDiff * -25;
+
+        /* Reset pts if more than 3 days */
+        else {
+            pts = 0;
+            ptsEase = daysDiff * -3;
+        }
 
         pts = pts + ptsEase;
 
