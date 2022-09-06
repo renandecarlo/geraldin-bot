@@ -547,7 +547,7 @@ class Watchdog {
 
     /* Check if users with same ip share the same exact location (probably same device = frauder) */
     async checkSameIpUserLocation(oldOrder, order) {
-        const msg = 'Pedidos de usuários diferentes com o mesmo IP e mesma exata localização. Usuários (%s) e (%s)';
+        const msg = 'Pedidos de usuários diferentes com o mesmo IP e mesma exata localização. Usuários *%s* e *%s*';
         const pts = 70;
         const weight = 2;
 
@@ -557,7 +557,7 @@ class Watchdog {
 
     /* Check if users with same ip share the android version and app version (probably same device = frauder) */
     async checkSameIpDeviceInfo(oldOrder, order) {
-        const msg = 'Pedidos de usuários diferentes com o mesmo IP e mesma versão de OS (Android/iOS) e app (Aiqfome) instalados (possivelmente mesmo aparelho). Usuários (%s) e (%s)';
+        const msg = 'Pedidos de usuários diferentes com o mesmo IP e mesma versão de OS (Android/iOS) e app (Aiqfome) instalados (possivelmente mesmo aparelho). Usuários *%s* e *%s*';
         const pts = 70;
         const weight = 2;
 
