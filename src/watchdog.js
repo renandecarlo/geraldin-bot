@@ -345,7 +345,7 @@ class Watchdog {
         let totalOrders = 1;
         const msg = 'Múltiplos pedidos *(%i)* %s';
         const pts = 60;
-        const ptsSameIpDifferentUser = 40; /* Maybe a real user in the same house. but maybe a new attacker */
+        const ptsRepeatedIp = 30; /* Maybe a real user in the same house. but maybe a new attacker */
         const weight = 1; /* For each order */
 
         for(const key in this.orders) {
