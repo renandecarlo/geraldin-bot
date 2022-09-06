@@ -662,6 +662,9 @@ class Watchdog {
         if(order.usuario.nome_completo.includes('Teste'))
             total = 85;
 
+        /* Round */
+        total = Math.round(total);
+
         /* Set score to order data */
         this.orders[order.id]['score'] = total;
 
