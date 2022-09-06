@@ -347,6 +347,7 @@ class Watchdog {
         const pts = 60;
         const ptsRepeatedIp = 30; /* Maybe a real user in the same house. but maybe a new attacker */
         const weight = 1; /* For each order */
+        const repeatedIpUsers = [];
 
         for(const key in this.orders) {
             if(this.orders[key].id == order.id) continue; /* Don't count same order as repeated, duh */
@@ -369,29 +370,28 @@ class Watchdog {
             else if(this.orders[key].virtual_browser_infos?.ip == order.virtual_browser_infos?.ip) {
                 repeatedIpCount++;
 
-                /* Check for same or different user. maybe someone in the same house, maybe a new attacker */
-                let tmpMsg = sprintf(msg, repeatedIpCount, 'com o mesmo ip. Usuários (%s) e (%s)');
-                tmpMsg = sprintf(tmpMsg, order.usuario.nome_completo, this.orders[key].usuario.nome_completo);
-
-                if(this.orders[key].usuario.id == order.usuario.id) {
-                    this.addUntrustedEntry(order.id, tmpMsg, pts, weight);
-                } else {
-                    this.addUntrustedEntry(order.id, tmpMsg, ptsSameIpDifferentUser, weight);
-                }
+                repeatedIpUsers.push(this.orders[key].usuario.nome_completo.trim());
 
                 /* Check if order was previously canceled */
                 this.checkPreviouslyCanceledOrder(this.orders[key], order);
 
-                /* Check if both orders have the same location and same device info */
+                /* Check if both orders have the same location or same device info */
                 this.checkSameIpUserLocation(this.orders[key], order);
                 this.checkSameIpDeviceInfo(this.orders[key], order);
             }
         }
 
-        /* Add repeated user count after loop to avoid duplicated entries */
+        /* Add repeated user/ip count after loop to avoid duplicated entries */
         if(repeatedUserCount > 1) {
-            const tmpMsg = sprintf(msg, repeatedUserCount, `do mesmo fominha *${order.usuario.nome_completo}*`);
-            this.addUntrustedEntry(order.id, tmpMsg, pts * repeatedUserCount, weight * repeatedUserCount);
+            const tmpMsg = sprintf(msg, repeatedUserCount, `do mesmo fominha *${order.usuario.nome_completo.trim()}*`);
+            this.addUntrustedEntry(order.id, tmpMsg, pts, weight * repeatedUserCount);
+        }
+
+        if(repeatedIpCount > 1) {
+            const users = repeatedIpUsers.join('*, *');
+
+            const tmpMsg = sprintf(msg, repeatedIpCount, `com o mesmo ip. Usuários: *${order.usuario.nome_completo.trim()}*, *${users}*`);   
+            this.addUntrustedEntry(order.id, tmpMsg, ptsRepeatedIp, weight * repeatedIpCount);
         }
 
         this.checkUserTotalOrders(totalOrders, order);
