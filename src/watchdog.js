@@ -666,9 +666,6 @@ class Watchdog {
         if(total > 100) total = 100;
         else if(total < 0) total = 0;
 
-        if(order.usuario.nome_completo.includes('Teste'))
-            total = 85;
-
         /* Round */
         total = Math.round(total);
 
