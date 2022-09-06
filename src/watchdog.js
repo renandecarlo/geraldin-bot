@@ -518,7 +518,7 @@ class Watchdog {
     /* Check user registering source */
     async checkUserRegistrationSource(order) {
         const msg = 'Fominha se cadastrou pelo %s';
-        const pts = -15;
+        const pts = -25;
         const weight = 1;
 
         if(order.usuario.origem_cadastro)
