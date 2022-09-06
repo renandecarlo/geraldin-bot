@@ -545,7 +545,7 @@ class Watchdog {
         const weight = 2;
 
         if(oldOrder.virtual_browser_infos?.location == order.virtual_browser_infos?.location)
-            this.addUntrustedEntry(order.id, sprintf(msg, order.usuario.nome_completo, oldOrder.usuario.nome_completo), pts, weight);
+            this.addUntrustedEntry(order.id, sprintf(msg, order.usuario.nome_completo.trim(), oldOrder.usuario.nome_completo.trim()), pts, weight);
     }
 
     /* Check if users with same ip share the android version and app version (probably same device = frauder) */
@@ -558,7 +558,7 @@ class Watchdog {
             oldOrder.virtual_browser_infos?.os == order.virtual_browser_infos?.os &&
             oldOrder.virtual_browser_infos?.app == order.virtual_browser_infos?.app
         )
-            this.addUntrustedEntry(order.id, sprintf(msg, order.usuario.nome_completo, oldOrder.usuario.nome_completo), pts, weight);
+            this.addUntrustedEntry(order.id, sprintf(msg, order.usuario.nome_completo.trim(), oldOrder.usuario.nome_completo.trim()), pts, weight);
     }
 
     /* Check user area code */
@@ -587,7 +587,7 @@ class Watchdog {
 
     /* Get user numbers */
     getUserNumbers(order) {
-        let numbers = order.usuario.telefone_celular.replace(/[^\d,+]/g, '').split(',');
+        let numbers = order.usuario.telefone_celular?.replace(/[^\d,+]/g, '').split(',');
 
         if(order.pedidos_endereco?.telefone)
             numbers.push(order.pedidos_endereco?.telefone.replace(/[^\d,+]/g, ''));
