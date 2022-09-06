@@ -187,26 +187,40 @@ class Watchdog {
     parseOrders(orders) {
         for(const key in orders)
             this.addOrder(orders[key]);
-
-        this.cleanOldOrders(); /* Clean old orders */
     }
 
     /* Add order */
     async addOrder(order) {
+        if(this.isOldOrder(order)) return; /* Return if it's an old order */
+
         if(!this.orders[order.id]) {
             this.orders[order.id] = order;
 
             if(this.ready || (!order.visualizado && order.status == 1)) /* Compute score for new orders and also unread orders */
                 await this.getOrderScore(order);
         }
+
+        this.cleanOldOrders(); /* Clean older orders */
     }
 
     /* Remove old orders from history (reset orders at 06:00) */
     cleanOldOrders() {
-        const now = new Date;
+        if(this.cleanTimer > new Date - this.cleanInterval) return; /* Wait 5 minutes between cleanings */
 
-        /* Wait 5 minutes between cleanings */
-        if(this.cleanTimer > now - this.cleanInterval) return;
+        for(const key in this.orders)
+            if(this.isOldOrder(this.orders[key])) {
+                delete this.orders[key];
+
+                if(this.untrustedData[key])
+                    delete this.untrustedData[key];
+            }
+
+        this.cleanTimer = new Date;
+    }
+
+    /* Check if order is old (older than today at 6:00) */
+    isOldOrder(order) {
+        const now = new Date;
 
         const olderThan = new Date;
         olderThan.setHours(6, 0, 0); /* 06:00 */
@@ -215,15 +229,8 @@ class Watchdog {
         if(now.getHours() > 0 && now.getHours() <= 5)
             olderThan.setDate(now.getDate() - 1);
 
-        for(const key in this.orders)
-            if(new Date(this.orders[key].created) < olderThan) {
-                delete this.orders[key];
-
-                if(this.untrustedData[key])
-                    delete this.untrustedData[key];
-            }
-
-        this.cleanTimer = new Date;
+        if(new Date(order.created) < olderThan)
+            return true;
     }
 
     /* Get order risk score */
