@@ -201,6 +201,8 @@ class Watchdog {
         }
 
         this.cleanOldOrders(); /* Clean older orders */
+
+        return true;
     }
 
     /* Remove old orders from history (reset orders at 06:00) */

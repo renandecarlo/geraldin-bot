@@ -62,9 +62,30 @@ const login = async () => {
     }
 }
 
-/* Intercept order refresh requests */
-let orders = {};
-const interceptOrders = () => {
+/* Intercept orders from socket in real time */
+const interceptOrdersSocket = async () => {
+    const client = await page.target().createCDPSession(); /* Created a chrome dev tools session */
+    await client.send('Network.enable');
+
+    client.on('Network.webSocketFrameReceived', async data => {
+        if(data.response?.payloadData) {
+            try {
+                const msg = JSON.parse(data.response.payloadData);
+
+                if(msg.event == 'Pedidos' && msg.channel.includes('private-cidade')) {
+                    const msgData = JSON.parse(msg.data);
+
+                    if(msgData.action == 'Insert' || msgData.action == 'Update')
+                        parseOrders([ msgData.data ]);
+                }
+                
+            } catch(e) {}
+        }
+    });
+}
+
+/* Intercept orders refresh from ajax */
+const interceptOrdersRefresh = () => {
     page.on('response', async (response) => {
         const request = response.request();
 
@@ -82,8 +103,8 @@ const interceptOrders = () => {
                 let text = await response.text();
 
                 if(text) {
-                    orders = JSON.parse(text);
-                    parseOrders();
+                    const orders = JSON.parse(text);
+                    parseOrders(orders);
 
                     /* Refresh page every few minutes to avoid visually stuck orders. Do it here to avoid reload breaking order refresh */
                     reloadPage();
@@ -115,16 +136,28 @@ const refreshOrders = async () => {
 
 
 /* Parse orders */
-const parseOrders = async () => {
+const parseOrders = async (orders) => {
     Object.values(orders).forEach(async order => {
         /* Add order to watchdog, if enabled */
         if(config.watchdog && watchdog?.ready) {
+            if(watchdog.orders[order.id] && typeof watchdog.orders[order.id].score !== 'number') return; /* Avoid showing msg without watchdog score */
+
             await watchdog.addOrder(order);
         }
 
         /* Order is waiting */
         if(order.status == 1) {
-            console.log(chalk.yellow.inverse('-> Pedido não lido identificado'), watchdog?.ready ? chalk.bgMagenta('Risco:', watchdog.orders[order.id].score) : '', chalk.yellowBright(order.usuario.nome_completo, order.id, order.restaurante.nome, getOrderSellerNumbers(order)));
+            console.log(
+                chalk.yellow.inverse('-> Pedido não lido identificado'), 
+                watchdog?.ready ? chalk.bgMagenta('Risco:', watchdog.orders[order.id].score) : '', 
+                chalk.yellowBright(
+                    order.usuario.nome_completo, 
+                    order.id, 
+                    order.restaurante.nome, 
+                    getOrderSellerNumbers(order)
+                )
+            );
+
             await checkOrder(order);
         }
     })
@@ -319,7 +352,7 @@ let watchdog;
         await login();
 
         /* Intercept and parse orders */
-        interceptOrders();
+        interceptOrdersRefresh();
     
         /* Head to orders page */
         await page.goto(`${baseUrl}/pedidos`);
@@ -336,6 +369,8 @@ let watchdog;
         if(config.watchdog) {
             watchdog = require('./watchdog');
             await watchdog.init(browser);
+
+            interceptOrdersSocket(); /* Intercept orders from socket in real time */
         }
     } catch (e) {
         console.err(chalk.bgRedBright('-> Erro', e));
