@@ -451,6 +451,16 @@ class Watchdog {
             this.addUntrustedEntry(order.id, msg, pts, weight);
     }
 
+    /* Check if order has coupon */
+    async checkOrderCoupon(order) {
+        const msg = 'O pedido foi feito com cupom';
+        const pts = -90;
+        const weight = 4;
+
+        if(order.cupom_id)
+            this.addUntrustedEntry(order.id, msg, pts, weight);
+    }
+
     /* Check for user registered date */
     async checkUserRegisteredDate(order) {
         const msg = 'Fominha é registrado há %s dias';
