@@ -499,7 +499,7 @@ class Watchdog {
 
         if(!order.pedidos_endereco) return;
 
-        if(order.pedidos_endereco.complemento && order.pedidos_endereco.referencia)
+        if(!order.pedidos_endereco.complemento && !order.pedidos_endereco.referencia)
             this.addUntrustedEntry(order.id, msg, pts, weight);
     }
 
