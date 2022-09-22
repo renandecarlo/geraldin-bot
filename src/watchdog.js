@@ -9,15 +9,14 @@ const DateTime = require('luxon').DateTime;
 const config = require('./config');
 const geraldo = require('./geraldo-listener');
 const wpp = require('./whatsapp-bot');
-const { user } = require('./config');
 
 class Watchdog {
     orders = {};
     untrustedData = {};
+    orderCancelQueue = [];
     cleanTimer = null;
     cleanInterval = 5 * 60 * 1000;
     disableMonitoringTimeout = 0;
-    isMonitoringInitial = null;
     closeTimeout = 0;
     ready = false;
 
@@ -45,6 +44,9 @@ class Watchdog {
 
         /* Load orders history */
         await this.filterOrders();
+
+        /* Init cancel queue monitoring */
+        this.checkCancelQueue();
     }
 
     /* Check if watchdog secondary tab is open */
@@ -71,8 +73,8 @@ class Watchdog {
         clearTimeout(this.disableMonitoringTimeout);
         clearTimeout(this.closeTimeout);
 
-        if(this.isMonitoringInitial !== null && !this.isMonitoringInitial)
-            await this.disableMonitoring();
+        if(await this.isMonitoring())
+            this.disableMonitoringDelayed(delay - 15 * 1000); /* Disable monitoring if enabled, 15 seconds earlier */
 
         this.closeTimeout = setTimeout(async () => {
             await this.closePage();
@@ -265,18 +267,17 @@ class Watchdog {
 
         /* Cancel order if risk score if above config settings */
         if(config.watchdogCancelOrders && order.score >= config.watchdogCancelOrdersScore) {
-            this.log(chalk.magenta('-> Pedido com risco alto. Cancelando pedido...'));
+            this.log(chalk.magenta('-> Pedido com risco alto. Enviando para fila de cancelamento...'), [ order.id ]);
             
-            await this.cancelOrder(order);
+            this.addOrderToCancelQueue(order);
 
             /* Cancel every user order */
-            // todo: queue cancel requests to avoid net:err when multiple orders are getting canceled at the same time
             if(config.watchdogCancelAllOrdersFromUser) {
                 const userOrders = this.getAllUserOrders(order.usuario.id);
 
                 for(const key in userOrders)
-                    if(userOrders[key].id != order.id) /* Avoid trying to cancel the main order again */
-                        await this.cancelOrder(userOrders[key]);
+                    if(userOrders[key].id != order.id && order.status == 1) /* Avoid trying to cancel the main order again */
+                        this.addOrderToCancelQueue(userOrders[key]);
             }
         }
     }
@@ -689,42 +690,56 @@ class Watchdog {
 
     /* Enable partner monitoring mode */
     async enableMonitoring() {
-        await retry(async () => { /* Sometimes the server returns a 403, try again then... */
-            this.log(chalk.magenta('-> Ativando modo de monitoramento...'));
+        try {
+            await retry(async () => { /* Sometimes the server returns a 403, try again then... */
+                this.log(chalk.magenta('-> Ativando modo de monitoramento...'));
 
-            await this.isMonitoring(); /* Make sure we're on the right page */
-    
-            await this.page.evaluate(() => {
-                return methods.monitorarLicenciado();
+                await this.isMonitoring(); /* Make sure we're on the right page */
+        
+                await this.page.evaluate(() => {
+                    return methods.monitorarLicenciado();
+                });        
             });        
+                });        
 
-            await this.page.waitForNavigation();
+                await this.page.waitForNavigation();
+            }, { 
         }, { 
-            retries: 1,
-            onRetry: (e) => {
-                this.log(chalk.redBright('-> Não foi possível ativar o modo de monitoramento.'), e);
-            }
-        });
+            }, { 
+                retries: 1,
+                onRetry: (e) => {
+                    this.log(chalk.redBright('-> Não foi possível ativar o modo de monitoramento. Tentando novamente.'), e);
+                }
+            });
+        } catch(e) {
+            this.log(chalk.redBright('-> Não foi possível desativar o modo de monitoramento.'), e);
+        }
     }
 
     /* Disable partner monitoring mode */
     async disableMonitoring() {
-        await retry(async () => { /* Sometimes the server returns a 403, try again then... */
-            this.log(chalk.magenta('-> Desativando modo de monitoramento...'));
-
-            await this.isMonitoring(); /* Make sure we're on the right page */
-
-            await this.page.evaluate(() => {
-                return methods.pararMonitorarLicenciado();
-            });
-
-            await this.page.waitForNavigation();
+        try {
+            await retry(async () => { /* Sometimes the server returns a 403, try again then... */
+                this.log(chalk.magenta('-> Desativando modo de monitoramento...'));
+    
+                await this.isMonitoring(); /* Make sure we're on the right page */
+    
+                await this.page.evaluate(() => {
+                    return methods.pararMonitorarLicenciado();
+                });
+    
+                await this.page.waitForNavigation();
+            }, { 
         }, { 
-            retries: 1,
-            onRetry: (e) => {
-                this.log(chalk.redBright('-> Não foi possível desativar o modo de monitoramento.'), e);
-            }
-        });
+            }, { 
+                retries: 1,
+                onRetry: (e) => {
+                    this.log(chalk.redBright('-> Não foi possível desativar o modo de monitoramento. Tentando novamente.'), e);
+                }
+            });
+        } catch(e) {
+            this.log(chalk.redBright('-> Não foi possível desativar o modo de monitoramento.'), e);
+        }
     }
 
     /* Disable monitoring after a few seconds */
@@ -752,17 +767,40 @@ class Watchdog {
 
         const monitoring = await this.page.$('#btn-autonomia-nao[hidden]'); /* Check if the "monitoring" button is hidden = not monitoring */
 
-        /* Save initial monitoring status */
-        if(!this.isMonitoringInitial)
-            this.isMonitoringInitial = monitoring;
-
         return !monitoring;
+    }
+
+    /* Add an order to the cancelling queue */
+    addOrderToCancelQueue(order) {
+        /* Check if order is already in the queue */
+        for(const i in this.orderCancelQueue)
+            if(order.id == this.orderCancelQueue[i]) return;
+
+        return this.orderCancelQueue.push(order.id);
+    }
+
+    /* Remove an order from the cancelling queue */
+    removeOrderFromCancelQueue(order) {
+        for(const i in this.orderCancelQueue)
+            if(order.id == this.orderCancelQueue[i])
+                return this.orderCancelQueue.splice(i, 1);
+    }
+
+    /* Check and initiate cancel queue interval */
+    async checkCancelQueue() {
+        if(this.orderCancelQueue.length > 0)
+            await this.cancelOrder(this.orders[this.orderCancelQueue[0]]);
+
+        setTimeout(() => this.checkCancelQueue(), 1000);
     }
 
     /* Cancel user order */
     async cancelOrder(order) {
         if(!order) return;
-        if(order.status == 0 || order.status == 2) return; /* Already canceled */
+        if(order.status == 0 || order.status == 2) { /* Already canceled */
+            this.removeOrderFromCancelQueue(order);
+            return;
+        }
 
         /* Disable timeouts that might interfere with canceling */
         clearTimeout(this.disableMonitoringTimeout);
@@ -770,64 +808,78 @@ class Watchdog {
 
         this.log(chalk.magenta('-> Cancelando pedido'), [ order.id ]);
 
+        /* Retry a couple of times if it fails */
         try {
-            await this.openPage(); /* Open a new tab, if not yet */
-
-            const isMonitoring = await this.isMonitoring();
-            if(!isMonitoring)
-                await this.enableMonitoring();
+            await retry(async () => {
+                await this.openPage(); /* Open a new tab, if not yet */
     
-            /* Filter to desired order */
-            await this.page.$eval('#filtro', el => el.value = "");
-            await this.page.type('#filtro', String(order.id));
-            await this.page.click('.btn-filtrar');
-            
-            /* Wait for order to load */
-            await this.page.waitForSelector(`#pedido-${order.id}-buscado`, { visible: true });
-
-            /* Check if order has already been canceled */
-            const canceled = await this.page.$(`#pedido-${order.id}-buscado .card-footer.cancelado`);
-            
-            if(canceled) {
-                this.log(chalk.redBright('-> O pedido já foi cancelado.'), [ order.id ]);
-
-                /* Disable monitoring if it was previously disabled... after a few seconds (to let other orders be canceled without toggling it every time) */
-                if(!this.isMonitoringInitial)
-                    this.disableMonitoringDelayed();
-
-                return;
-            }
-
-            /* Open cancel popup */
-            await this.page.$eval(`#pedido-${order.id}-buscado .btn-cancelar`, el => el.click());
+                const isMonitoring = await this.isMonitoring();
+                if(!isMonitoring)
+                    await this.enableMonitoring();
+        
+                /* Filter to desired order */
+                // await this.page.$eval('#filtro', el => el.value = "");
+                await this.page.$eval('#filtro', (el, id) => el.value = String(id), order.id);
+                await this.page.click('.btn-filtrar');
+                
+                /* Wait for order to load */
+                await this.page.waitForSelector(`#pedido-${order.id}-buscado`, { visible: true });
     
-            /* Wait for cancel popup and select custom options */
-            await this.page.waitForSelector('#modal-cancelamento', { visible: true });
+                /* Check if order has already been canceled */
+                const canceled = await this.page.$(`#pedido-${order.id}-buscado .card-footer.cancelado`);
+                
+                if(canceled) {
+                    this.log(chalk.redBright('-> O pedido já foi cancelado.'), [ order.id ]);
+                    this.removeOrderFromCancelQueue(order);
     
-            await this.page.select('#motivo-cancelar', '22'); /* Outros */
-            await this.page.type('#input-motivo-cancelar', 'Trote (geraldin-bot)');
-            await this.page.click('#remover-avaliacao');
+                    /* Close tab and disable monitoring if no other orders to cancel */
+                    this.closePageDelayed();
     
-            /* Cancel order */
-            await this.page.click('#button-send-cancelar');
+                    return;
+                }
     
-            /* Wait for confirmation and dismiss */
-            await this.page.waitForSelector('#alertify-ok', { visible: true });
-            const cancel = await this.page.$eval('#alertify-ok', el => el.click());
+                /* Open cancel popup */
+                await this.page.$eval(`#pedido-${order.id}-buscado .btn-cancelar`, el => el.click());
+        
+                /* Wait for cancel popup and select custom options */
+                await this.page.waitForSelector('#modal-cancelamento', { visible: true });
+        
+                await this.page.select('#motivo-cancelar', '22'); /* Outros */
+                await this.page.$eval('#input-motivo-cancelar', el => el.value = 'Trote (geraldin-bot)');
+                await this.page.click('#remover-avaliacao');
+        
+                /* Cancel order */
+                await this.page.click('#button-send-cancelar');
+        
+                /* Wait for confirmation and dismiss */
+                await this.page.waitForSelector('#alertify-ok', { visible: true });
+                const cancel = await this.page.$eval('#alertify-ok', el => { 
+                    el.click();
+                    return true;
+                });
 
-            if(cancel)
-                this.log(chalk.magentaBright.inverse('[anti-trote]-> Pedido cancelado!'), [ order.id ] );
+                if(cancel) {
+                    this.log(chalk.magenta('-> Pedido cancelado!'), [ order.id ] );
+                    this.removeOrderFromCancelQueue(order);
 
-            /* Disable monitoring if it was previously disabled... after a few seconds (to let other orders be canceled without toggling it every time) */
-            if(!this.isMonitoringInitial)
-                this.disableMonitoringDelayed();
-
-            /* Close tab if no other orders to cancel */
-            this.closePageDelayed();
+                    /* Set order status to canceled */
+                    this.orders[order.id].status = 0;
+                }
+    
+                /* Close tab and disable monitoring if no other orders to cancel */
+                this.closePageDelayed();
+            }, {
+                retries: 2,
+                minTimeout: 10 * 1000,
+                maxTimeout: 10 * 1000,
+                onRetry: (e) => {    
+                    this.log(chalk.redBright('-> Não foi possível cancelar o pedido. Tentando novamente.'), [ order.id ], e);
+                }
+            });
         } catch(e) {
-            /* Close tab after a while if failed */
+            /* Close tab and disable monitoring after a while if failed */
             this.closePageDelayed();
-
+    
             this.log(chalk.redBright('-> Não foi possível cancelar o pedido.'), [ order.id ], e);
 
             await this.checkPageOpen();
