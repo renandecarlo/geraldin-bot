@@ -605,6 +605,16 @@ class Watchdog {
             this.addUntrustedEntry(order.id, msg, pts, weight);
     }
 
+    /* Check if user has verified number */
+    async checkUserVerifiedNumber(order) {
+        const msg = 'Fominha tem número verificado';
+        const pts = -80;
+        const weight = 2;
+
+        if(order.usuario.numero_verificado)
+            this.addUntrustedEntry(order.id, msg, pts, weight);
+    }
+
     /* Get user numbers */
     getUserNumbers(order) {
         let numbers = order.usuario.telefone_celular?.replace(/[^\d,+]/g, '').split(',');
