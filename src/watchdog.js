@@ -196,10 +196,13 @@ class Watchdog {
         if(this.isOldOrder(order)) return; /* Return if it's an old order */
 
         if(!this.orders[order.id]) {
+            order = this.normalizeOrder(order);
             this.orders[order.id] = order;
 
-            if(this.ready || (!order.visualizado && order.status == 1)) /* Compute score for new orders and also unread orders */
+            /* Compute score for new orders and also unread orders */
+            if(this.ready || (!order.visualizado && order.status == 1)) {
                 await this.getOrderScore(order);
+            }
         }
 
         this.cleanOldOrders(); /* Clean older orders */
@@ -237,11 +240,46 @@ class Watchdog {
             return true;
     }
 
+    /* Normalize order fields. Websocket doesn't have some common fields that ajax request has. Try replacing them */
+    normalizeOrder(order) {
+        /* User created date */
+        if(!order.usuario.virtual_created && order.usuario.created) {
+            const date = order.usuario.created.split('-');
+            order.usuario.virtual_created = `${date[2]}-${date[1]}-${date[0]}`;
+        }
+
+        /* User number */
+        if(!order.usuario.telefone_celular && (order.usuario.telefone || order.usuario.celular)) {
+            order.usuario.telefone_celular = [ ...new Set([order.usuario.telefone, order.usuario.celular]) ].join(', ');
+        }
+
+        /* Try using websocket CPF */
+        if(!order.usuario.cpf && order.usuario.cpf_spin)
+            order.usuario.cpf = order.usuario.cpf_spin;
+
+        /* User browser info */
+        if(!order.virtual_browser_infos && order.browser_infos) {
+            order.virtual_browser_infos = JSON.parse(order.browser_infos);
+        }
+
+        return order;
+    }
+
     /* Get order risk score */
     async getOrderScore(order) {
         await this.checkUserValidWppNumber(order);
+        await this.checkUserVerifiedNumber(order);
         await this.checkUserRepeatedOrders(order);
+        await this.checkIpRepeatedOrders(order);
+        await this.checkTimeBetweenOrders(order);
+        await this.checkPreviouslyCanceledOrder(order);
+        await this.checkPreviouslyCanceledOrderSameIp(order);
+        await this.checkSameIpUserLocation(order);
+        await this.checkSameIpDeviceInfo(order);
+        await this.checkUserOneSignalId(order);
+        await this.checkUserTotalOrders(order);
         await this.checkOrderPaymentType(order);
+        await this.checkOrderCoupon(order);
         await this.checkUserRegisteredDate(order);
         await this.checkUserAddress(order);
         await this.checkUserAvatar(order);
@@ -350,88 +388,127 @@ class Watchdog {
 
     /* Check for repeated orders from same user */
     async checkUserRepeatedOrders(order) {
-        let repeatedUserCount = 1;
-        let repeatedIpCount = 1;
-        let totalOrders = 1;
-        const msg = 'Múltiplos pedidos *(%i)* %s';
+        const msg = 'Múltiplos pedidos *(%i)* do mesmo fominha *%s*';
         const pts = 60;
-        const ptsRepeatedIp = 30; /* Maybe a real user in the same house. but maybe a new attacker */
-        const weight = 1; /* For each order */
-        const repeatedIpUsers = [];
+        const weight = 2; /* For each order */
+        let repeatedCount = 1;
 
         for(const key in this.orders) {
-            if(this.orders[key].id == order.id) continue; /* Don't count same order as repeated, duh */
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
 
-            /* Check for orders with same user id or same user email */
+            /* Check for orders with same user id */
             else if(this.orders[key].usuario.id == order.usuario.id) {
-                repeatedUserCount++;
-
-                /* Only count valid orders towards user total */
-                if(order.status == 1)
-                    totalOrders++;
-
-                /* Check time between orders */
-                this.checkTimeBetweenOrders(this.orders[key], order);
-
-                /* Check if order was previously canceled */
-                this.checkPreviouslyCanceledOrder(this.orders[key], order);
-            }
-
-            else if(this.orders[key].virtual_browser_infos?.ip == order.virtual_browser_infos?.ip) {
-                repeatedIpCount++;
-
-                repeatedIpUsers.push(this.orders[key].usuario.nome_completo.trim());
-
-                /* Check if order was previously canceled */
-                this.checkPreviouslyCanceledOrder(this.orders[key], order);
-
-                /* Check if both orders have the same location or same device info */
-                this.checkSameIpUserLocation(this.orders[key], order);
-                this.checkSameIpDeviceInfo(this.orders[key], order);
+                repeatedCount++;
             }
         }
 
-        /* Add repeated user/ip count after loop to avoid duplicated entries */
-        if(repeatedUserCount > 1) {
-            const tmpMsg = sprintf(msg, repeatedUserCount, `do mesmo fominha *${order.usuario.nome_completo.trim()}*`);
-            this.addUntrustedEntry(order.id, tmpMsg, pts, weight * repeatedUserCount);
+        if(repeatedCount > 1) {
+            const tmpMsg = sprintf(msg, repeatedCount, order.usuario.nome_completo.trim());
+
+            this.addUntrustedEntry(
+                order.id, 
+                tmpMsg, 
+                this.getFinalEntryPts(pts, repeatedCount),
+                weight * (repeatedCount-1)
+            );
         }
-
-        if(repeatedIpCount > 1) {
-            const users = repeatedIpUsers.join('*, *');
-
-            const tmpMsg = sprintf(msg, repeatedIpCount, `com o mesmo ip. Usuários: *${order.usuario.nome_completo.trim()}*, *${users}*`);   
-            this.addUntrustedEntry(order.id, tmpMsg, ptsRepeatedIp, weight * repeatedIpCount);
-        }
-
-        this.checkUserTotalOrders(totalOrders, order);
     }
 
-    /* Check if user has older orders. Real users might have some. Count positively */
-    async checkUserTotalOrders(totalOrdersToday, order) {
-        const msg = 'Fominha tem um total de *(%i)* pedidos antigos';
-        const pts = -10; /* For each old order */
-        const weight = 2;
+    /* Check for repeated orders from other users with same ip address.Maybe a real user in the same house. but maybe a new attacker */
+    async checkIpRepeatedOrders(order) {
+        const msg = 'Múltiplos pedidos *(%i)* com o mesmo ip. Usuários: *%s* e *%s*';
+        const pts = 30;
+        const weight = 1; /* For each order */
+        const repeatedIpUsers = [];
+        let repeatedCount = 1;
 
-        const total = order.usuario.quantidade_pedidos - totalOrdersToday;
+        
+        for(const key in this.orders) {
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
+            else if(this.orders[key].usuario.id == order.usuario.id) continue; /* Skip if same user */
+            
 
-        if(total > 1)
-            this.addUntrustedEntry(order.id, sprintf(msg, total), pts * total, weight);
+            /* Check for orders with same ip */
+            else if(
+                this.orders[key].virtual_browser_infos &&
+                this.orders[key].virtual_browser_infos.ip == order.virtual_browser_infos?.ip
+            ) {
+                repeatedIpUsers.push(this.orders[key].usuario.nome_completo.trim());
+                repeatedCount++;
+            }
+        }
+
+        if(repeatedCount > 1) {
+            const users = [ ... new Set(repeatedIpUsers)].join('*, *');
+            const tmpMsg = sprintf(msg, repeatedCount, order.usuario.nome_completo.trim(), users);   
+
+            this.addUntrustedEntry(order.id, tmpMsg, pts, weight * (repeatedCount-1));
+        }
     }
 
     /* Check the time between orders */
-    async checkTimeBetweenOrders(oldOrder, order) {
-        const msg = 'Fominha fez dois ou mais pedidos em pouco tempo (%i minutos)';
+    async checkTimeBetweenOrders(order) {
+        const msg = 'Fominha fez *(%s)* pedidos em *%i minutos*';
         const weight = 4;
-        let pts = 100; /* Decrease pts for each extra minute between orders */
+        const pts = 100; /* Decrease pts for each extra minute between orders */
+        let finalPts = 0;
+        let repeatedCount = 1;
+        let firstOrderDate;
 
-        const timeDiff = Math.floor(Math.abs(new Date(order.created) - new Date(oldOrder.created)) / 60 / 1000);
-        const ptsEase = timeDiff * -1; /* Ease some of the points as time pass by. 1pts each 1 min */
+        for(const key in this.orders) {
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
 
-        pts = pts + ptsEase;
+            /* Check for orders with same user id */
+            else if(this.orders[key].usuario.id == order.usuario.id) {
+                const timeDiff = Math.floor(Math.abs(new Date(order.created) - new Date(this.orders[key].created)) / 60 / 1000);
+                const ptsEase = timeDiff * -1; /* Ease some of the points as time pass by. 1pts each 1 min */
 
-        if(pts > 0)
-            this.addUntrustedEntry(order.id, sprintf(msg, timeDiff), pts, weight);
+                const orderPts = pts + ptsEase;
+
+                if(orderPts > 0) {
+                    finalPts = finalPts + orderPts;
+                    repeatedCount++;
+
+                    const orderCreated = new Date(this.orders[key].created);
+                    if(!firstOrderDate || orderCreated < firstOrderDate) firstOrderDate = orderCreated;
+                }
+            }
+        }
+        
+        if(repeatedCount > 1) {
+            /* Get time diff between first order and now */
+            const timeDiff = Math.floor(Math.abs(new Date(order.created) - firstOrderDate) / 60 / 1000);
+            finalPts = Math.round(finalPts / (repeatedCount-1)); /* Get pts average if more than 2 orders */
+            
+            this.addUntrustedEntry(
+                order.id, 
+                sprintf(msg, repeatedCount, timeDiff), 
+                finalPts,
+                weight * (repeatedCount-1)
+            );
+        }        
+    }
+
+    /* Check if user has older orders. Real users might have some. Count positively */
+    async checkUserTotalOrders(order) {
+        const msg = 'Fominha tem um total de *(%i)* pedidos antigos';
+        const pts = -10; /* For each old order */
+        const weight = 2;
+        let totalOrdersToday = 1;
+
+        for(const key in this.orders) {
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
+
+            /* Check for orders with same user id */
+            else if(this.orders[key].usuario.id == order.usuario.id) {
+                totalOrdersToday++;
+            }
+        }
+
+        const total = Number(order.usuario.quantidade_pedidos) - totalOrdersToday;
+
+        if(total > 1)
+            this.addUntrustedEntry(order.id, sprintf(msg, total), pts * total, weight);
     }
 
     /* Check order payment type. If it's online, it's usually trustworthy */
@@ -467,7 +544,7 @@ class Watchdog {
         const msg = 'Fominha é registrado há %s dias';
         const weightOlderUser = 1;
         const weightNewUser = 3;
-        let pts = 60;
+        let pts = 40;
         let ptsEase;
 
         const userCreatedDate = new Date(order.usuario.virtual_created);
@@ -475,7 +552,7 @@ class Watchdog {
 
         /* Ease the points each day the user is registered. Higher on the first 3 days */
         if(daysDiff >= 0 && daysDiff <= 3)
-            ptsEase = daysDiff * -25;
+            ptsEase = daysDiff * -15;
 
         /* Reset pts if more than 3 days */
         else {
@@ -495,7 +572,7 @@ class Watchdog {
     /* Check for address completeness */
     async checkUserAddress(order) {
         const msg = 'Fominha não tem complemento/referência no endereço';
-        const pts = 60;
+        const pts = 40;
         const weight = 1;
 
         if(!order.pedidos_endereco) return;
@@ -517,7 +594,7 @@ class Watchdog {
 
     /* Check if email address has a gravatar.com image set (may indicate that the email address is really used) */
     async checkUserGravatar(order) {
-        const msg = 'Fominha possui gravatar no email registrado: %s';
+        const msg = 'Fominha possui gravatar registrado no email: %s';
         const pts = -10;
         const weight = 1;
 
@@ -530,7 +607,7 @@ class Watchdog {
 
     /* Check user registering source */
     async checkUserRegistrationSource(order) {
-        const msg = 'Fominha se cadastrou pelo %s';
+        const msg = 'Fominha se registrou pelo %s';
         const pts = -25;
         const weight = 1;
 
@@ -541,52 +618,176 @@ class Watchdog {
     /* Check if user has registered cpf? */
     async checkUserCPF(order) {
         const msg = 'Fominha tem CPF registrado';
-        const pts = -15;
-        const weight = 1;
+        const pts = -50;
+        const weight = 2;
 
         if(order.usuario.cpf)
             this.addUntrustedEntry(order.id, msg, pts, weight);
     }
 
     /* Check if user has previously canceled orders due to fraud */
-    async checkPreviouslyCanceledOrder(oldOrder, order) {
-        const msg = 'Fominha já tem pedido cancelado por trote (#%s)';
+    async checkPreviouslyCanceledOrder(order) {
+        const msg = 'Fominha já tem pedido cancelado por trote (*#%s*)';
         const pts = 100;
         const weight = 8;
+        const fraudOrders = [];
+        let repeatedCount = 1;
 
-        if(oldOrder.status == 0 && oldOrder.status_motivo.includes('Trote'))
-            this.addUntrustedEntry(order.id, sprintf(msg, oldOrder.id), pts, weight);
+        for(const key in this.orders) {
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
+
+            /* Check for orders with same user id */
+            else if(this.orders[key].usuario.id == order.usuario.id) {
+                if(
+                    this.orders[key].status == 0 && 
+                    this.orders[key].status_motivo && 
+                    this.orders[key].status_motivo.includes('Trote')
+                ) {
+                    fraudOrders.push(this.orders[key].id);
+                    repeatedCount++;
+                }
+            }
+        }
+
+        if(repeatedCount > 1) {
+            const orders = [ ... new Set(fraudOrders)].join('*, #');
+            this.addUntrustedEntry(order.id, sprintf(msg, orders), pts, weight * (repeatedCount-1));
+        }
+    }
+
+    /* Check if user with same IP has previously canceled orders due to fraud */
+    async checkPreviouslyCanceledOrderSameIp(order) {
+        const msg = 'Um fominha com o mesmo IP já tem pedido cancelado por trote (*#%s*)';
+        const pts = 70;
+        const weight = 4;
+        const fraudOrders = [];
+        let repeatedCount = 1;
+
+        for(const key in this.orders) {
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
+            else if(this.orders[key].usuario.id == order.usuario.id) continue; /* Skip if same user */
+
+            /* Check for orders with same ip and canceled orders */
+            else if(
+                this.orders[key].virtual_browser_infos &&
+                this.orders[key].virtual_browser_infos.ip == order.virtual_browser_infos?.ip
+            ) {
+                if(
+                    this.orders[key].status == 0 && 
+                    this.orders[key].status_motivo &&
+                    this.orders[key].status_motivo.includes('Trote')
+                ) {
+                    fraudOrders.push(this.orders[key].id);
+                    repeatedCount++;
+                }
+            }
+        }
+
+        if(repeatedCount > 1) {
+            const orders = [ ... new Set(fraudOrders)].join('*, #');
+
+            this.addUntrustedEntry(
+                order.id, 
+                sprintf(msg, orders), 
+                this.getFinalEntryPts(pts, repeatedCount),
+                weight * (repeatedCount-1)
+            );
+        }
     }
 
     /* Check if users with same ip share the same exact location (probably same device = frauder) */
-    async checkSameIpUserLocation(oldOrder, order) {
-        const msg = 'Pedidos de usuários diferentes com o mesmo IP e mesma exata localização. Usuários *%s* e *%s*';
+    async checkSameIpUserLocation(order) {
+        const msg = 'Múltiplos pedidos *(%s)* de usuários com o mesmo IP e mesma localização. Usuários *%s* e *%s*';
         const pts = 70;
         const weight = 2;
+        const fraudUsers = [];
+        let repeatedCount = 1;
 
-        if(oldOrder.virtual_browser_infos?.location == order.virtual_browser_infos?.location)
-            this.addUntrustedEntry(order.id, sprintf(msg, order.usuario.nome_completo.trim(), oldOrder.usuario.nome_completo.trim()), pts, weight);
+        for(const key in this.orders) {
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
+            else if(this.orders[key].usuario.id == order.usuario.id) continue; /* Skip if same user */
+
+            /* Check for orders with same ip and same location */
+            else if(
+                this.orders[key].virtual_browser_infos && 
+                this.orders[key].virtual_browser_infos.ip == order.virtual_browser_infos?.ip
+            ) {
+                if(
+                    this.orders[key].virtual_browser_infos.location &&
+                    this.orders[key].virtual_browser_infos.location == order.virtual_browser_infos?.location
+                ) {
+                    fraudUsers.push(this.orders[key].usuario.nome_completo.trim());
+                    repeatedCount++;
+                }
+            }
+        }
+
+        if(repeatedCount > 1) {
+            const users = [ ... new Set(fraudUsers)].join('*, *');
+
+            this.addUntrustedEntry(
+                order.id, 
+                sprintf(msg, repeatedCount, order.usuario.nome_completo.trim(), users), 
+                this.getFinalEntryPts(pts, repeatedCount),
+                weight  * repeatedCount
+            );
+        }
     }
 
     /* Check if users with same ip share the android version and app version (probably same device = frauder) */
-    async checkSameIpDeviceInfo(oldOrder, order) {
-        const msg = 'Pedidos de usuários diferentes com o mesmo IP e mesma versão de OS (Android/iOS) e app (Aiqfome) instalados (possivelmente mesmo aparelho). Usuários *%s* e *%s*';
+    async checkSameIpDeviceInfo(order) {
+        const msg = 'Múltiplos pedidos *(%s)* de usuários com o mesmo IP e mesma versão de sistema operacional (Android/iOS) e app (aiqfome) instalados (possivelmente mesmo aparelho). Usuários *%s* e *%s*';
         const pts = 70;
         const weight = 2;
+        const fraudUsers = [];
+        let repeatedCount = 1;
 
-        if(
-            oldOrder.virtual_browser_infos?.os == order.virtual_browser_infos?.os &&
-            oldOrder.virtual_browser_infos?.app == order.virtual_browser_infos?.app
-        )
-            this.addUntrustedEntry(order.id, sprintf(msg, order.usuario.nome_completo.trim(), oldOrder.usuario.nome_completo.trim()), pts, weight);
+        for(const key in this.orders) {
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
+            else if(this.orders[key].usuario.id == order.usuario.id) continue; /* Skip if same user */
+
+            /* Check for orders with same ip and device info */
+            else if(
+                this.orders[key].virtual_browser_infos && 
+                this.orders[key].virtual_browser_infos.ip == order.virtual_browser_infos?.ip
+            ) {
+                if(
+                    this.orders[key].virtual_browser_infos.os && 
+                    this.orders[key].virtual_browser_infos.os == order.virtual_browser_infos?.os &&
+                    this.orders[key].virtual_browser_infos.app &&
+                    this.orders[key].virtual_browser_infos.app == order.virtual_browser_infos?.app
+                ) {
+                    fraudUsers.push(this.orders[key].usuario.nome_completo.trim());
+                    repeatedCount++;
+                }
+            }
+        }
+
+        if(repeatedCount > 1) {
+            const users = [ ... new Set(fraudUsers)].join('*, *');
+
+            this.addUntrustedEntry(
+                order.id, 
+                sprintf(msg, repeatedCount, order.usuario.nome_completo.trim(), users), 
+                this.getFinalEntryPts(pts, repeatedCount),
+                weight * (repeatedCount-1)
+            );
+        }
+    }
+
+    /* Get final pts for entry. Increase risk points for each entry, for each repeated orders. More repeated orders = higher pts */
+    getFinalEntryPts(pts, repeatedCount) {
+        const recurringFactor = 1 + ((repeatedCount - 2) * 0.50); /* Increase pts by 50% for each additional orders higher than 2 */
+
+        return Math.round(pts * recurringFactor);
     }
 
     /* Check user area code */
     async checkUserAreaCode(order) {
         if(!config.watchdogVerifyAreaCode) return;
 
-        const msg = 'Fominha não tem um DDD válido da cidade.';
-        const pts = 60;
+        const msg = 'Fominha não tem um DDD válido da cidade';
+        const pts = 40;
         const weight = 2;
 
         const validAreaCodes = config.watchdogValidAreaCodes.replace(/[^\d,+]/g, '').split(',');
@@ -648,7 +849,7 @@ class Watchdog {
 
     /* Get user numbers */
     getUserNumbers(order) {
-        let numbers = order.usuario.telefone_celular?.replace(/[^\d,+]/g, '').split(',');
+        let numbers = order.usuario.telefone_celular.replace(/[^\d,+]/g, '').split(',');
 
         if(order.pedidos_endereco?.telefone)
             numbers.push(order.pedidos_endereco?.telefone.replace(/[^\d,+]/g, ''));
@@ -726,6 +927,8 @@ class Watchdog {
         /* Set score to order data */
         this.orders[order.id]['score'] = total;
 
+        // console.log(order.id, this.getUntrustedData(order.id));
+
         return total;
     }
 
@@ -740,12 +943,8 @@ class Watchdog {
                 await this.page.evaluate(() => {
                     return methods.monitorarLicenciado();
                 });        
-            });        
-                });        
 
                 await this.page.waitForNavigation();
-            }, { 
-        }, { 
             }, { 
                 retries: 1,
                 onRetry: (e) => {
@@ -770,8 +969,6 @@ class Watchdog {
                 });
     
                 await this.page.waitForNavigation();
-            }, { 
-        }, { 
             }, { 
                 retries: 1,
                 onRetry: (e) => {
