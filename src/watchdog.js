@@ -615,6 +615,37 @@ class Watchdog {
             this.addUntrustedEntry(order.id, msg, pts, weight);
     }
 
+    /* Check user OneSignal ID */
+    async checkUserOneSignalId(order) {
+        const msg = 'Fominha tem o mesmo ID de push de outro usuário (possivelmente mesmo aparelho). Usuários: *%s* e *%s*';
+        const pts = 80;
+        const weight = 2;
+        const fraudUsers = [];
+        let repeatedCount = 1;
+
+        for(const key in this.orders) {
+            if(this.orders[key].id == order.id) continue; /* Skip current order */
+            else if(this.orders[key].usuario.id == order.usuario.id) continue; /* Skip if same user */
+
+            /* Check for orders with same OneSignal ID */
+            else if(this.orders[key].onesignal_id && this.orders[key].onesignal_id == order.onesignal_id) {
+                fraudUsers.push(this.orders[key].usuario.nome_completo.trim());
+                repeatedCount++;
+            }
+        }
+
+        if(repeatedCount > 1) {
+            const users = [ ... new Set(fraudUsers)].join('*, *');
+
+            this.addUntrustedEntry(
+                order.id, 
+                sprintf(msg, order.usuario.nome_completo.trim(), users), 
+                this.getFinalEntryPts(pts, repeatedCount),
+                weight * (repeatedCount-1)
+            );
+        }
+    }
+
     /* Get user numbers */
     getUserNumbers(order) {
         let numbers = order.usuario.telefone_celular?.replace(/[^\d,+]/g, '').split(',');
