@@ -179,7 +179,9 @@ const reloadPage = async () => {
 /* Check if orders are old enough */
 let sentMessagesDate = {};
 let sentMessagesCount = {};
+let sendingMessage = {};
 let partnerSentMessagesDate = {};
+let partnerSendingMessage = {};
 const checkOrder = async order => {
 
     /* Send message if order is old enough */
@@ -188,15 +190,22 @@ const checkOrder = async order => {
             if(!sentMessagesDate[order.id] || Date.now() - sentMessagesDate[order.id] > config.waitForBetween) {   
                 console.log(chalk.green('-> O pedido está esperando por muito tempo. Enviando mensagem...'));
                 
-                if(config.notifySellers)
-                    if(await sendMessage(order)) {
-                        sentMessagesDate[order.id] = Date.now();
+                if(config.notifySellers) {
+                    if(!sendingMessage[order.id]) { /* Avoid trying to send more messages while we send the other one */
+                        sendingMessage[order.id] = true;
 
-                        if(!sentMessagesCount[order.id])
-                            sentMessagesCount[order.id] = 1;
-                        else
-                            sentMessagesCount[order.id]++;
+                        if(await sendMessage(order)) {
+                            sentMessagesDate[order.id] = Date.now();
+
+                            if(!sentMessagesCount[order.id])
+                                sentMessagesCount[order.id] = 1;
+                            else
+                                sentMessagesCount[order.id]++;
+                        }
+
+                        sendingMessage[order.id] = false;
                     }
+                }
             }
         }
 
@@ -206,8 +215,14 @@ const checkOrder = async order => {
             if(!partnerSentMessagesDate[order.id] || Date.now() - partnerSentMessagesDate[order.id] > config.notifyPartnerWaitForBetween) {   
                 console.log(chalk.green('-> Enviando mensagem de alerta ao CM...'));
 
-                if(await sendPartnerMessage(order))
-                    partnerSentMessagesDate[order.id] = Date.now();
+                if(!partnerSendingMessage[order.id]) { /* Avoid trying to send more messages while we send the other one */
+                    partnerSendingMessage[order.id] = true;
+
+                    if(await sendPartnerMessage(order))
+                        partnerSentMessagesDate[order.id] = Date.now();
+
+                    partnerSendingMessage[order.id] = false;
+                }
             }
         }
 }
