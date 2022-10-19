@@ -75,7 +75,7 @@ const interceptOrdersSocket = async () => {
                 if(msg.event == 'Pedidos' && msg.channel.includes('private-cidade')) {
                     const msgData = JSON.parse(msg.data);
 
-                    if(msgData.action == 'Insert' || msgData.action == 'Update')
+                    if(msgData.action == 'Insert')
                         parseOrders([ msgData.data ]);
                 }
                 
