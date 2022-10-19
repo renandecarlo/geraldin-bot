@@ -151,7 +151,7 @@ const parseOrders = async (orders) => {
         if(order.status == 1) {
             console.log(
                 chalk.yellow.inverse('-> Pedido não lido identificado'), 
-                watchdog?.ready ? chalk.bgMagenta('Risco:', watchdog.orders[order.id].score) : '', 
+                watchdog?.ready && typeof watchdog.orders[order.id]?.score === 'number' ? chalk.bgMagenta('Risco:', watchdog.orders[order.id].score) : '', 
                 chalk.yellowBright(
                     order.usuario.nome_completo, 
                     order.id, 
