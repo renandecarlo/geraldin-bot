@@ -45,10 +45,14 @@ const fileFormat = printf(info => {
 	const message = util.format(removeColor( info.message )).trim();
 
     /* Get extra parameters and use util.format for prettier output */
-    const splat = info[Symbol.for('splat')];
+    let splat = info[Symbol.for('splat')];
 
-	if(splat)
-		args = util.format(removeColor(splat[0])).trim();
+	if(splat) {
+        if(Array.isArray(splat))
+            splat = splat.join(' ');
+
+		args = util.format(removeColor(splat)).trim();
+    }
 
 	return `[${info.label}] ${info.timestamp}: ${message} ${args}`;
 })
