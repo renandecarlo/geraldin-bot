@@ -143,6 +143,8 @@ const parseOrders = async (orders) => {
             if(watchdog.orders[order.id] && typeof watchdog.orders[order.id].score !== 'number') return; /* Avoid showing msg without watchdog score */
 
             await watchdog.addOrder(order);
+
+            order = watchdog.orders[order.id]; /* Update order with watchdog info */
         }
 
         /* Order is waiting */
