@@ -157,6 +157,8 @@ const parseOrders = async (orders) => {
 
         /* Order is waiting */
         if(order.status == 1) {
+            const waitingTime = Math.round((Date.now() - Date.parse(order.created)) / 1000 / 60);
+
             console.log(
                 chalk.yellow.inverse('-> Pedido não lido identificado'), 
                 watchdog?.ready && typeof watchdog.orders[order.id]?.score === 'number' ? chalk.bgMagenta('Risco:', watchdog.orders[order.id].score) : '', 
@@ -164,8 +166,9 @@ const parseOrders = async (orders) => {
                     order.usuario.nome_completo, 
                     order.id, 
                     order.restaurante.nome, 
-                    getOrderSellerNumbers(order)
-                )
+                    getOrderSellerNumbers(order),
+                    `[${waitingTime} min]`
+                ),
             );
 
             await checkOrder(order);
