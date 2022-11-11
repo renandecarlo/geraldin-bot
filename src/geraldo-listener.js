@@ -136,8 +136,16 @@ const refreshOrders = async () => {
 
 
 /* Parse orders */
+let orderCheckDate = {};
 const parseOrders = async (orders) => {
     Object.values(orders).forEach(async order => {
+
+        /* Avoid parsing order too often */
+        if(orderCheckDate[order.id] && Date.now() - orderCheckDate[order.id] < 1000 * 15) /* Wait 15 seconds */
+            return;
+
+        orderCheckDate[order.id] = Date.now();
+
         /* Add order to watchdog, if enabled */
         if(config.watchdog && watchdog?.ready) {
             if(watchdog.orders[order.id] && typeof watchdog.orders[order.id].score !== 'number') return; /* Avoid showing msg without watchdog score */
