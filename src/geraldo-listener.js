@@ -144,7 +144,7 @@ const parseOrders = async (orders) => {
 
             await watchdog.addOrder(order);
 
-            order = watchdog.orders[order.id]; /* Update order with watchdog info */
+            order = {...watchdog.orders[order.id], ...order }; /* Merge updated order data */
         }
 
         /* Order is waiting */
