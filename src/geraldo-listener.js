@@ -324,7 +324,7 @@ let watchdog;
         // devtools: true,
         defaultViewport: null,
         headless: config.headless,
-        args: ['--mute-audio'],
+        args: ['--mute-audio', '--disable-extensions'],
         executablePath: chromePath
     });
     

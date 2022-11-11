@@ -130,7 +130,17 @@ let client;
 (async () => {
 	/* Start venom browser */
 	try {
-		client = await venom.create('geraldo-bot', false, handleSession, { headless: config.headless, multidevice: true, autoClose: false })
+		client = await venom.create(
+			'geraldo-bot', 
+			false, 
+			handleSession, 
+			{ 
+				headless: config.headless, 
+				multidevice: true, 
+				autoClose: false, 
+				browserArgs: ['--disable-extensions'] 
+			}
+		);
 
 		client.page.on('close', () => {
 			console.log(chalk.bgRedBright('-> O navegador do WhatsApp Web foi fechado. Encerrando programa...'));
