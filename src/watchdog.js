@@ -849,7 +849,7 @@ class Watchdog {
 
     /* Get user numbers */
     getUserNumbers(order) {
-        let numbers;
+        let numbers = [];
 
         if(order.usuario.telefone_celular)
             numbers = order.usuario.telefone_celular.replace(/[^\d,+]/g, '').split(',');
