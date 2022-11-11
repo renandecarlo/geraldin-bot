@@ -48,8 +48,13 @@ const fileFormat = printf(info => {
     let splat = info[Symbol.for('splat')];
 
 	if(splat) {
-        if(Array.isArray(splat))
-            splat = splat.join(' ');
+        if(Array.isArray(splat)) {
+            const splatArr = splat;
+            splat = '';
+            
+            for(const i in splatArr)
+                splat += util.format(splatArr[i]).trim() + ' ';
+        }
 
 		args = util.format(removeColor(splat)).trim();
     }
