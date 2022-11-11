@@ -82,15 +82,15 @@ Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 | **NOTIFICA_CM_MSG** | Mensagem que será usada para notificar o CM. Também pode ser personalizada com os mesmos códigos da **MENSAGEM**. | |
 
 ## Anti-trote
-O anti-trote foi desenvolvido para evitar pedidos maliciosos, e funciona analisando e cruzando diversas informações do pedido. Ao final, ele atribui um score de risco de 0 a 100 para cada pedido, podendo então cancela-lo automaticamente ou apenas emitir um alerta.
-> Atenção: o modo anti-trote usa uma quantidade considerável de recursos do sistema. Habilite-o somente em casos absolutamente necessários.
+O anti-trote foi desenvolvido de modo a evitar pedidos maliciosos, e funciona analisando e cruzando diversas informações. Ao detectar um novo pedido, ele o atribui um score de risco de 0 a 100, podendo então cancelá-lo automaticamente ou apenas emitir um alerta.
+> Atenção: o modo anti-trote usa uma quantidade considerável de recursos do sistema. Habilite-o somente em casos necessários.
 
 | config | descrição | opções |
 |--|--|--|
 | **ANTITROTE** | Habilita o anti-trote | `0 = desativado, 1 = ativado`|
 | **ANTITROTE_NOTIFICA_CM** | Habilita a opção de enviar mensagem para o CM quando o score de risco do pedido ultrapassar determinado valor | `0 = desativado, 1 = ativado`|
 | **ANTITROTE_NOTIFICA_CM_NUMEROS** | Um número ou uma lista de números que serão notificados. | Ex: `(99) 98765-4321,44 2222-2222,88977776666`|
-| **ANTITROTE_NOTIFICA_CM_SCORE** | Um score de risco de 0 a 100 que, quando ultrapassado, enviará a mensagem. | Ex: `20`,`40`,`60`|
+| **ANTITROTE_NOTIFICA_CM_SCORE** | Um score de risco de 0 a 100 que, quando ultrapassado, enviará a mensagem. Quanto maior o valor, maior o risco do pedido. | Ex: `20`,`40`,`60`|
 | **ANTITROTE_NOTIFICA_CM_MSG** | Mensagem que será usada para notificar o CM. Pode ser personalizada com os mesmos códigos da **MENSAGEM**. Também pode ser usado com o seguinte código: | `%score%` - Score de risco do pedido |
 | **ANTITROTE_CANCELA_PEDIDOS** | Habilita a opção de cancelar os pedidos automaticamente quando o score de risco do pedido ultrapassar determinado valor. *(\*\*\*experimental\*\*\*)*| `0 = desativado, 1 = ativado`|
 | **ANTITROTE_CANCELA_PEDIDOS_SCORE** | Um score de risco de 0 a 100 que, quando ultrapassado, cancelará o pedido. | Ex: `80`, `85`, `90`, `100`|
