@@ -103,6 +103,7 @@ O anti-trote foi desenvolvido de modo a evitar pedidos maliciosos, e funciona an
 Por enquanto...
 - Às vezes o bot não consegue efetuar o login assim que é aberto, atrasando o funcionamento...
 - Aparece o erro "Não foi possível encontrar o módulo..." quando inicia o programa. Tente limpar a pasta temporária do Windows. Abra o Windows Explorer, na barra de endereço digite `%AppData%\..\Local\Temp\`, e apague todo o conteúdo desta pasta.
+- Para erros relacionados ao envio de mensagens, tente apagar a pasta `tokens` (na mesma pasta do bot). 
 
 ## Dependências
 Este projeto usa o [puppeteer](https://github.com/puppeteer/puppeteer) para monitorar o Geraldo, e o [venom](https://github.com/orkestral/venom) para gerenciar o WhatsApp Web.
