@@ -135,7 +135,7 @@ let client;
 			false, 
 			handleSession, 
 			{ 
-				headless: config.headless, 
+				headless: config.headlessWhatsapp, 
 				multidevice: true, 
 				autoClose: false, 
 				browserArgs: ['--disable-extensions'] 

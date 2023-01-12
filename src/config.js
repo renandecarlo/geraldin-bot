@@ -22,6 +22,7 @@ const config = {
     notifyPartnerSendContactCard:   process.env.NOTIFICA_CM_ENVIA_CONTATO == '1' ? true : false,
     notifyPartnerMsg:               process.env.NOTIFICA_CM_MSG || '🚨 Atenção, o *%restaurante%* tem um pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*!',
     headless:                       process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : true,
+    headlessWhatsapp:               process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : true,
     message:                        process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀',
 	
     /* whatsapp-bot.js */
