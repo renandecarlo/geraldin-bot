@@ -343,6 +343,9 @@ let watchdog;
     const pages = await browser.pages();
     page = pages[0] || await browser.newPage();
 
+    /* Set page navigation timeout */
+    page.setDefaultNavigationTimeout(55000);
+
     /* Avoid notification permission dialog */
     const context = browser.defaultBrowserContext();
     await context.overridePermissions(baseUrl, []);

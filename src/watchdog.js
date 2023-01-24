@@ -58,8 +58,12 @@ class Watchdog {
 
     /* Open a new tab, if not yet */
     async openPage() {
-        if(!this.page || !await this.checkPageOpen())
+        if(!this.page || !await this.checkPageOpen()) {
             this.page = await this.browser.newPage();
+
+            /* Set page navigation timeout */
+            this.page.setDefaultNavigationTimeout(55000);
+        }
     }
 
     /* Close tab */
