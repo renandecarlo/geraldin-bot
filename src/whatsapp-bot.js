@@ -108,7 +108,9 @@ const sendMessage = async data => {
 				/* Send to everyone if enabled or if it's a partner notification msg, break otherwise. */
 				if(!config.sendToEveryone && !data.notifyPartnerMsg)
 					break;
-			}
+			} else
+				throw result;
+
 		} catch (error) {
 			console.log(chalk.redBright('-> Mensagem não enviada. Tentando próximo número'), [ error.status, wppNumber, error.text ] );
 		}
