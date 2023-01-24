@@ -30,7 +30,7 @@ const getUserContacts = async wppNumbers => {
 	try {
 		const userContacts = await client.getAllContacts();
 			
-		for(contact of userContacts) {
+		for(const contact of userContacts) {
 			if(contact.isMyContact)
 				for(const wppNumber of wppNumbers) {
 					if(contact.id.user == `55${wppNumber}`)
@@ -43,21 +43,29 @@ const getUserContacts = async wppNumbers => {
 }
 
 /* Get valid wpp numbers between given numbers */
-const getValidNumber = async wppNumbers => {
+const getValidNumbers = async wppNumbers => {
 	if(!client) return;
 
 	const contacts = [];
-	for(wppNumber of wppNumbers) {
-		try {
-			const contact = await client.checkNumberStatus(`55${wppNumber}@c.us`);
-
-			if(contact.status == 200)
-				contacts.push(wppNumber);
-
-		} catch { /* Fail silently */ }
+	for(const wppNumber of wppNumbers) {
+		if(await checkNumber(wppNumber))
+			contacts.push(wppNumber);
 	}
 
 	return contacts;
+}
+
+/* Check if the wpp number is valid */
+const checkNumber = async wppNumber => {
+	if(!client) return;
+
+	try {
+		const result = await client.checkNumberStatus(`55${wppNumber}@c.us`);
+
+		if(result.status == 200)
+			return true;
+
+	} catch { /* Fail silently */ }
 }
 
 /* Send a contact vcard to desired data.wppNumbers */
@@ -159,7 +167,7 @@ let client;
 module.exports = {
 	sendMessage, 
 	getUserContacts, 
-	getValidNumber, 
+	getValidNumbers, 
 	sendContactVcard,
 	isConnected,
 }

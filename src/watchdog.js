@@ -378,7 +378,7 @@ class Watchdog {
         const weight = 1;
 
         const numbers = this.getUserNumbers(order);
-        const validNumbers = await wpp.getValidNumber(numbers);
+        const validNumbers = await wpp.getValidNumbers(numbers);
 
         if(validNumbers?.length)
             this.addUntrustedEntry(order.id, hasWppMsg, hasWppPts, weight); /* Count positively if user has wpp number registered */

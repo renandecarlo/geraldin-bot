@@ -293,7 +293,7 @@ const sendContactVcard = async (order, wppNumbers) => {
 
     /* If there aren't any, send the first seller's valid wpp number */
     if(!contacts?.length)
-        contacts = await wpp.getValidNumber(sellerWppNumbers);
+        contacts = await wpp.getValidNumbers(sellerWppNumbers);
 
     if(contacts?.length)
         return await wpp.sendContactVcard({
