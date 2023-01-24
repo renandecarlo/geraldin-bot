@@ -571,7 +571,7 @@ class Watchdog {
 
     /* Check for address completeness */
     async checkUserAddress(order) {
-        const msg = 'Fominha não tem complemento/referência no endereço';
+        const msg = 'Fominha não tem complemento e nem referência no endereço';
         const pts = 40;
         const weight = 1;
 
