@@ -180,9 +180,9 @@ const parseOrders = async (orders) => {
 let lastReload = null;
 const reloadPage = async () => {
     if(Date.now() - lastReload > 1000 * 60 * 5) {
-        await page.reload();
-
         lastReload = Date.now();
+
+        await page.reload();
     }
 }
 
