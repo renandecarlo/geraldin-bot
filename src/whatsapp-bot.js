@@ -62,7 +62,7 @@ const checkNumber = async wppNumber => {
 	try {
 		const result = await client.checkNumberStatus(`55${wppNumber}@c.us`);
 
-		if(result.status == 200)
+		if(result?.status == 200)
 			return true;
 
 	} catch { /* Fail silently */ }
