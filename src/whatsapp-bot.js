@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const venom = require('venom-bot');
+const wppconnect = require('@wppconnect-team/wppconnect');
 const Sentry = require("@sentry/node");
 
 const config = require('./config');
@@ -76,11 +76,11 @@ const sendContactVcard = async data => {
 		try {
 			const result = await client.sendContactVcard(`55${wppNumber}@c.us`, `55${data.contactNumber}@c.us`, data.contactName);
 
-			if(!result.erro)
-				console.log(chalk.greenBright.inverse('-> Cartão de contato enviado!'), [ result.status, wppNumber ] )
+			if(result.ack)
+				console.log(chalk.greenBright.inverse('-> Cartão de contato enviado!'), [ result.ack, wppNumber ] )
 
 		} catch(error) {
-			console.log(chalk.redBright('-> Não foi possível enviar o cartão de contato.'), [ error.status, wppNumber, error.text ] );
+			console.log(chalk.redBright('-> Não foi possível enviar o cartão de contato.'), [ wppNumber, error ] );
 		}
 	}
 
@@ -117,8 +117,8 @@ const sendMessage = async data => {
 			// console.log('Result: ', result); // return object success
 
 			/* Check if message has been sent. Send to next number otherwise */
-			if(!result.erro) {
-				console.log(chalk.greenBright.inverse('-> Enviado!'), [ result.status, wppNumber ] )
+			if(result.ack) {
+				console.log(chalk.greenBright.inverse('-> Enviado!'), [ result.ack, wppNumber ] )
 				
 				/* Send to everyone if enabled or if it's a partner notification msg, break otherwise. */
 				if(!config.sendToEveryone && !data.notifyPartnerMsg)
@@ -127,7 +127,7 @@ const sendMessage = async data => {
 				throw result;
 
 		} catch (error) {
-			console.log(chalk.redBright('-> Mensagem não enviada. Tentando próximo número'), [ error.status, wppNumber, error.text ] );
+			console.log(chalk.redBright('-> Mensagem não enviada. Tentando próximo número'), [ wppNumber, error ] );
 		}
 	}
 
@@ -147,17 +147,13 @@ let client;
 (async () => {
 	/* Start venom browser */
 	try {
-		client = await venom.create(
-			'geraldo-bot', 
-			false, 
-			handleSession, 
-			{ 
-				headless: config.headlessWhatsapp, 
-				multidevice: true, 
-				autoClose: false, 
-				browserArgs: ['--disable-extensions'] 
-			}
-		);
+		client = await wppconnect.create({
+			session: 'geraldo-bot', 
+			statusFind: handleSession, 
+			headless: config.headlessWhatsapp, 
+			autoClose: false, 
+			browserArgs: ['--disable-extensions'],
+		});
 
 		client.page.on('close', () => {
 			console.log(chalk.bgRedBright('-> O navegador do WhatsApp Web foi fechado. Encerrando programa...'));
