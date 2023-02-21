@@ -148,6 +148,8 @@ let client;
 (async () => {
 	/* Start venom browser */
 	try {
+		wppconnect.defaultLogger.level = 'info';
+
 		client = await wppconnect.create({
 			session: 'geraldo-bot', 
 			statusFind: handleSession, 
