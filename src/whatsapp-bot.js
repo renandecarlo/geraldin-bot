@@ -155,6 +155,7 @@ let client;
 			statusFind: handleSession, 
 			headless: config.headlessWhatsapp, 
 			autoClose: false, 
+			deviceSyncTimeout: false,
 			browserArgs: ['--disable-extensions'],
 		});
 
