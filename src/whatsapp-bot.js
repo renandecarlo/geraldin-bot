@@ -63,7 +63,7 @@ const checkNumber = async wppNumber => {
 		const result = await client.checkNumberStatus(`55${wppNumber}@c.us`);
 
 		if(result?.status == 200)
-			return true;
+			return result;
 
 	} catch { /* Fail silently */ }
 }
@@ -106,14 +106,15 @@ const sendMessage = async data => {
 		}			
 
 		/* Check if it's a valid wpp number */
-		if(!await checkNumber(wppNumber)) {
+		const wppUser = await checkNumber(wppNumber);
+		if(!wppUser) {
 			console.log(chalk.redBright('-> Este número não possui WhatsApp. Tentando próximo número'), [ wppNumber ] );
 			continue;
 		}
 
 		/* Send msg */
 		try {
-			const result = await client.sendText(`55${wppNumber}@c.us`, data.message);
+			const result = await client.sendText(`${wppUser.id.user}@${wppUser.id.server}`, data.message);
 			// console.log('Result: ', result); // return object success
 
 			/* Check if message has been sent. Send to next number otherwise */
