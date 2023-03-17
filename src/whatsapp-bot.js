@@ -74,7 +74,14 @@ const sendContactVcard = async data => {
 
 	for(const wppNumber of data.wppNumbers) {
 		try {
-			const result = await client.sendContactVcard(`55${wppNumber}@c.us`, `55${data.contactNumber}@c.us`, data.contactName);
+			/* Check if it's a valid wpp number */
+			const wppUser = await checkNumber(wppNumber);
+			if(!wppUser) {
+				console.log(chalk.redBright('-> Este número não possui WhatsApp. Tentando próximo número'), [ wppNumber ] );
+				continue;
+			}
+			
+			const result = await client.sendContactVcard(`${wppUser.id.user}@${wppUser.id.server}`, `55${data.contactNumber}@c.us`, data.contactName);
 
 			if(result.ack)
 				console.log(chalk.greenBright.inverse('-> Cartão de contato enviado!'), [ result.ack, wppNumber ] )
