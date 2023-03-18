@@ -50,8 +50,7 @@ const login = async () => {
     console.log(chalk.blueBright('-> Usuário não está logado. Entrando...'));
 
     try {
-        if(!page.url().includes('/login')) /* Go to login page if not already */
-            await page.goto(`${baseUrl}/login`);
+        await page.goto(`${baseUrl}/login`);
 
         await page.bringToFront();
         
