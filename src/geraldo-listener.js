@@ -98,6 +98,9 @@ const interceptOrdersRefresh = () => {
         if (request.url().includes('/refresh_pedidos')) {
             // console.log(chalk.bgBlueBright('-> Verificando pedidos...'));
 
+            /* Avoid intercepting while page reloads */
+            if(isPageReloading) return;
+
             /* Check response status and try logging again if needed */
             let status = response.status();
             if(status != 200) {
@@ -125,6 +128,9 @@ const interceptOrdersRefresh = () => {
 /* Refresh orders */
 const refreshOrders = async () => {
     try {
+        /* Avoid refreshing while page reloads */
+        if(isPageReloading) return;
+
         /* Check if it's on order page before refreshing */
         if(!page.url().includes('/pedidos'))
             return await login();
@@ -183,12 +189,15 @@ const parseOrders = async (orders) => {
 }
 
 /* Reload page every few minutes */
+let isPageReloading = false;
 let lastReload = Date.now();
 const reloadPage = async () => {
-    if(Date.now() - lastReload > 1000 * 870) { /* 14.5 min */
-        lastReload = Date.now();
-
+    if(Date.now() - lastReload > 1000 * 870) { /* 14.5 min */    
+        isPageReloading = true;
         await page.reload();
+        isPageReloading = false;
+
+        lastReload = Date.now();
     }
 }
 
