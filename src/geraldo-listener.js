@@ -120,7 +120,7 @@ const interceptOrdersRefresh = () => {
 const refreshOrders = async () => {
     try {
         /* Check if it's on order page before refreshing */
-        if(page.url() != `${baseUrl}/pedidos`)
+        if(!page.url().includes('/pedidos'))
             return await login();
 
         await page.evaluate(() => {
