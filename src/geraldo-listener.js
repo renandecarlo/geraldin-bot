@@ -194,7 +194,7 @@ let lastReload = Date.now();
 const reloadPage = async () => {
     if(Date.now() - lastReload > 1000 * 870) { /* 14.5 min */    
         isPageReloading = true;
-        await page.reload();
+        await page.reload({ waitUntil: 'load' });
         isPageReloading = false;
 
         lastReload = Date.now();
@@ -387,7 +387,7 @@ let watchdog;
     
         /* Head to orders page */
         if(!page.url().includes('/pedidos'))
-            await page.goto(`${baseUrl}/pedidos`);
+            await page.goto(`${baseUrl}/pedidos`, { waitUntil: 'load' });
 
         /* Refresh orders */
         refreshOrders();
