@@ -371,8 +371,9 @@ let watchdog;
         interceptOrdersRefresh();
     
         /* Head to orders page */
-        await page.goto(`${baseUrl}/pedidos`);
-    
+        if(!page.url().includes('/pedidos'))
+            await page.goto(`${baseUrl}/pedidos`);
+
         /* Refresh orders */
         refreshOrders();
     
