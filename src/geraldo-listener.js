@@ -22,12 +22,19 @@ const baseUrl = 'https://geraldo.aiqfome.com';
 /* Check if user is logged in */
 const isLoggedIn = async () => {
     try {
-        if(!await page.$('.user-header-detail'))
-            await page.goto(`${baseUrl}/pedidos`);
+        const check = await page.evaluate(async (baseUrl) => {
+            const result = await fetch(`${baseUrl}/sistema_usuarios/verificaAutonomia`, { method: 'POST' });
 
-        if(await page.$('.user-header-detail')) {
+            return {
+                status: result.status, 
+                redirected: result.redirected,
+                ok: result.ok
+            }
+        }, baseUrl);
+
+        if(check.status == 200 && !check.redirected) {
             console.log(chalk.blueBright('-> Usuário já está logado'));
-            
+
             return true;
         }
     } catch (e) {
