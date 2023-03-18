@@ -374,11 +374,11 @@ let watchdog;
         await page.goto(`${baseUrl}/pedidos`);
     
         /* Refresh orders */
-        await refreshOrders();
+        refreshOrders();
     
         /* Refresh orders every 1 minute */
         let ordersMonitor = setInterval(async () => {
-            await refreshOrders();
+            refreshOrders();
         }, 1000 * 60);
 
         /* Init watchdog */
