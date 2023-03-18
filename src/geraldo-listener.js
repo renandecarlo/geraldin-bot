@@ -177,7 +177,7 @@ const parseOrders = async (orders) => {
 }
 
 /* Reload page every few minutes */
-let lastReload = null;
+let lastReload = Date.now();
 const reloadPage = async () => {
     if(Date.now() - lastReload > 1000 * 870) { /* 14.5 min */
         lastReload = Date.now();
