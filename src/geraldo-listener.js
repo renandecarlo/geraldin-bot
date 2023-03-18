@@ -27,8 +27,7 @@ const isLoggedIn = async () => {
 
             return {
                 status: result.status, 
-                redirected: result.redirected,
-                ok: result.ok
+                redirected: result.redirected
             }
         }, baseUrl);
 
