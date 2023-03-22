@@ -191,12 +191,17 @@ const parseOrders = async (orders) => {
 let isPageReloading = false;
 let lastReload = Date.now();
 const reloadPage = async () => {
-    if(Date.now() - lastReload > 1000 * 870) { /* 14.5 min */    
-        isPageReloading = true;
-        await page.reload({ waitUntil: 'load' });
-        isPageReloading = false;
+    if(Date.now() - lastReload > 1000 * 870) { /* 14.5 min */        
+        /* Use try/catch to avoid being stuck with isPageReloading=true */
+        try {
+            isPageReloading = true;
+            await page.reload({ waitUntil: 'load' });
+            isPageReloading = false;
 
-        lastReload = Date.now();
+            lastReload = Date.now();
+        } catch {
+            isPageReloading = false;
+        }
     }
 }
 
