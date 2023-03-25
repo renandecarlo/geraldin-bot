@@ -13,8 +13,15 @@ if(!module.parent || !module.parent.signedin) {
 	});
 }
 
-/* Handle browser exit */
+/* Handle session */
+let inChat;
 const handleSession = (statusSession, session) => {
+
+	/* Handle session connected */
+	if(statusSession == 'inChat')
+		inChat = true;
+
+	/* Handle browser exit */
 	if(statusSession == 'browserClose') {
 		Sentry.close(8000).then(() => {
 			process.exit();
@@ -24,7 +31,7 @@ const handleSession = (statusSession, session) => {
 
 /* Get user wpp contacts between given numbers */
 const getUserContacts = async wppNumbers => {
-	if(!client) return;
+	if(!isConnected()) return;
 	
 	const contacts = [];
 	try {
@@ -44,7 +51,7 @@ const getUserContacts = async wppNumbers => {
 
 /* Get valid wpp numbers between given numbers */
 const getValidNumbers = async wppNumbers => {
-	if(!client) return;
+	if(!isConnected()) return;
 
 	const contacts = [];
 	for(const wppNumber of wppNumbers) {
@@ -57,7 +64,7 @@ const getValidNumbers = async wppNumbers => {
 
 /* Check if the wpp number is valid */
 const checkNumber = async wppNumber => {
-	if(!client) return;
+	if(!isConnected()) return;
 
 	try {
 		const result = await client.checkNumberStatus(`55${wppNumber}@c.us`);
@@ -70,7 +77,7 @@ const checkNumber = async wppNumber => {
 
 /* Send a contact vcard to desired data.wppNumbers */
 const sendContactVcard = async data => {
-	if(!client) return;
+	if(!isConnected()) return;
 
 	for(const wppNumber of data.wppNumbers) {
 		try {
@@ -96,7 +103,7 @@ const sendContactVcard = async data => {
 
 /* Send message to desired data.wppNumbers */
 const sendMessage = async data => {
-	if(!client) {
+	if(!isConnected()) {
 		console.log(chalk.blueBright('-> Aguardando inicialização do Whatsapp Web...'));
 		return;
 	}
@@ -144,7 +151,7 @@ const sendMessage = async data => {
 
 /* Check current wpp session status */
 const isConnected = () => {
-	if(client) return true;
+	if(client && inChat) return true;
 }
 
 /**
