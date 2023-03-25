@@ -41,7 +41,7 @@ const getUserContacts = async wppNumbers => {
 			if(contact.isMyContact)
 				for(const wppNumber of wppNumbers) {
 					if(contact.id.user == `55${wppNumber}`)
-						contacts.push(wppNumber);
+						contacts.push(contact);
 				}
 		}
 	} catch { /* Fail silently */ }
@@ -55,8 +55,10 @@ const getValidNumbers = async wppNumbers => {
 
 	const contacts = [];
 	for(const wppNumber of wppNumbers) {
-		if(await checkNumber(wppNumber))
-			contacts.push(wppNumber);
+		const contact = await checkNumber(wppNumber);
+
+		if(contact)
+			contacts.push(contact);
 	}
 
 	return contacts;
@@ -88,7 +90,11 @@ const sendContactVcard = async data => {
 				continue;
 			}
 			
-			const result = await client.sendContactVcard(`${wppUser.id.user}@${wppUser.id.server}`, `55${data.contactNumber}@c.us`, data.contactName);
+			const result = await client.sendContactVcard(
+				`${wppUser.id.user}@${wppUser.id.server}`, 
+				`${data.contactNumber.id.user}@${data.contactNumber.id.server}`,
+				data.contactNumber.verifiedName || data.contactNumber.formattedName || data.contactNumber.name || data.contactName
+			);
 
 			if(result.ack)
 				console.log(chalk.greenBright.inverse('-> Cartão de contato enviado!'), [ result.ack, wppNumber ] )
