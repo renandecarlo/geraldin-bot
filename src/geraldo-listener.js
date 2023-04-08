@@ -113,13 +113,13 @@ const interceptOrdersRefresh = () => {
                 if(text) {
                     const orders = JSON.parse(text);
                     parseOrders(orders);
-
-                    /* Refresh page every few minutes to avoid visually stuck orders. Do it here to avoid reload breaking order refresh */
-                    reloadPage();
                 }
             } catch(e) {
                 console.log(chalk.redBright('-> Não foi possível ler os dados dos pedidos.'), e, response);
             }
+
+            /* Refresh page every few minutes to avoid visually stuck orders. Do it here to avoid reload breaking order refresh */
+            reloadPage();
         }
     })
 }
@@ -132,7 +132,7 @@ const refreshOrders = async () => {
 
         /* Check if it's on order page before refreshing */
         if(!page.url().includes('/pedidos'))
-            return await login();
+            await page.goto(`${baseUrl}/pedidos`, { waitUntil: 'load' });
 
         await page.evaluate(() => {
             methods?.refreshPedidos?.();
