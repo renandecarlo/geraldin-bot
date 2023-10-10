@@ -97,6 +97,8 @@ O anti-trote foi desenvolvido de modo a evitar pedidos maliciosos, e funciona an
 | **ANTITROTE_CANCELA_TODOS_PEDIDOS_DO_USUARIO** | Se habilitado, em conjunto com a opção de cancelar, cancelará todos os pedidos em aberto do usuário, assim que ultrapassado o risco escolhido. | `0 = desativado, 1 = ativado` |
 | **ANTITROTE_VERIFICA_DDD** | Verifica e atribui um peso para o score quando o DDD do pedido não coincide com os DDDs válidos. O peso é adicionado somente quando NENHUM número cadastrado do usuário possui um DDD válido. | Ex: `0 = desativado, 1 = ativado` |
 | **ANTITROTE_DDDS_VALIDOS** | Uma lista com um ou mais DDDs válidos. | Ex: `21,22,24` |
+| **ANTITROTE_VERIFICA_CUPOM_ALTO** | Habilita a verificação de cupons com valores altos. | Ex: `0 = desativado, 1 = ativado`  |
+| **ANTITROTE_PORCENTAGEM_CUPOM_ALTO** | Um valor de 0 a 100 que corresponde à porcentagem do cupom sob o total do pedido. Por ex, `50`, alerta para cupons com valor acima de 50% do valor do pedido. O valor total usado é o sub-total do pedido (total sem taxas de entrega) | Ex: `50`,`60`,`70` |
 
 
 ## Bugs conhecidos
