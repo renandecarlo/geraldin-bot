@@ -292,6 +292,7 @@ class Watchdog {
         await this.checkUserCPF(order);
         await this.checkUserAreaCode(order);
         await this.deepValidateEmail(order);
+        await this.checkExpensiveCoupons(order);
 
         const score = this.computeScore(order);
         await this.processOrder(order);
@@ -849,6 +850,31 @@ class Watchdog {
                 weight * (repeatedCount-1)
             );
         }
+    }
+
+    /* Check order for expensive coupon */
+    async checkExpensiveCoupons(order) {
+        const msg = 'O pedido tem um cupom de valor alto, *%i%%* do pedido. Sub-total do pedido: R$%s (cupom de *R$%s*).';
+        const pts = 100;
+        const weight = 10;
+        
+        if(!config.watchdogVerifyExpensiveCoupons) return;
+        if(!order.cupon) return;
+
+        const couponPercent = (order.cupon.valor / order.subtotal) * 100;
+
+        if(couponPercent > config.watchdogVerifyExpensiveCouponsPercentage)
+            this.addUntrustedEntry(
+                order.id, 
+                sprintf(
+                    msg, 
+                    couponPercent,
+                    new Intl.NumberFormat().format(order.subtotal),
+                    new Intl.NumberFormat().format(order.cupon.valor),
+                ), 
+                pts, 
+                weight
+            );
     }
 
     /* Get user numbers */

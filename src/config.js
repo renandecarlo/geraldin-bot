@@ -47,6 +47,8 @@ const config = {
     watchdogCancelAllOrdersFromUser: process.env.ANTITROTE_CANCELA_TODOS_PEDIDOS_DO_USUARIO == '1' ? true : false,
     watchdogVerifyAreaCode: process.env.ANTITROTE_VERIFICA_DDD == '1' ? true : false,
     watchdogValidAreaCodes: process.env.ANTITROTE_DDDS_VALIDOS,
+    watchdogVerifyExpensiveCoupons: process.env.ANTITROTE_VERIFICA_CUPOM_ALTO == '1' ? true : false,
+    watchdogVerifyExpensiveCouponsPercentage: process.env.ANTITROTE_PORCENTAGEM_CUPOM_ALTO,
 };
 
 module.exports = config;
