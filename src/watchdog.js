@@ -788,11 +788,11 @@ class Watchdog {
 
     /* Check user area code */
     async checkUserAreaCode(order) {
-        if(!config.watchdogVerifyAreaCode) return;
-
         const msg = 'Fominha não tem um DDD válido da cidade';
-        const pts = 40;
+        const pts = 90;
         const weight = 2;
+        
+        if(!config.watchdogVerifyAreaCode) return;
 
         const validAreaCodes = config.watchdogValidAreaCodes.replace(/[^\d,+]/g, '').split(',');
         const userNumbers = this.getUserNumbers(order);
