@@ -861,7 +861,7 @@ class Watchdog {
         if(!config.watchdogVerifyExpensiveCoupons) return;
         if(!order.cupon) return;
 
-        const couponPercent = (order.cupon.valor / order.subtotal) * 100;
+        const couponPercent = (order.desconto / order.subtotal) * 100;
 
         if(couponPercent > config.watchdogVerifyExpensiveCouponsPercentage)
             this.addUntrustedEntry(
@@ -870,7 +870,7 @@ class Watchdog {
                     msg, 
                     couponPercent,
                     new Intl.NumberFormat().format(order.subtotal),
-                    new Intl.NumberFormat().format(order.cupon.valor),
+                    new Intl.NumberFormat().format(order.desconto),
                 ), 
                 pts, 
                 weight
