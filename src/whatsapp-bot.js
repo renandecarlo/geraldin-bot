@@ -177,6 +177,7 @@ let client;
 			autoClose: false, 
 			deviceSyncTimeout: false,
 			browserArgs: ['--disable-extensions'],
+			whatsappVersion: null,
 		});
 
 		client.page.on('close', () => {
