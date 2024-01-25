@@ -38,7 +38,7 @@
       ".env.build"
     ],
     "targets": [
-      "node16-win"
+      "node20-win",
     ],
     "outputPath": "../dist"
   },
