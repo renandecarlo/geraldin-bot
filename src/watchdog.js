@@ -35,6 +35,9 @@ class Watchdog {
         }
 
         console.log(chalk.bgMagenta('-> Iniciando anti-trote...'));
+        console.log(chalk.bgMagenta('-> O sistema anti-trote foi desabilitado devido à remoção dos relatórios de pedidos do Geraldo.'));
+
+        return false;
 
         this.browser = browser;
         await this.openPage();
