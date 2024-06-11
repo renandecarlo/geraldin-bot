@@ -21,7 +21,7 @@ const checkUpdate = async () => {
         const remotePackage = await response.json();
 
         if(semver.gt(remotePackage.version, package.version))
-            spinner.succeed(chalk.bgBlueBright(`Nova atualização ${lastRelease.tag_name} disponível.`) + chalk.blueBright(' https://github.com/renandecarlo/geraldin-bot/releases/latest'));
+            spinner.succeed(chalk.bgBlue(`Atenção, uma nova atualização está disponível: ${lastRelease.tag_name}!`) + chalk.blueBright('\n↳ Baixe no link: https://geraldin.vip\n'));
         else
             spinner.succeed(`Você está na última versão: v${package.version}`);
 
