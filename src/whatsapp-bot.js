@@ -177,7 +177,7 @@ let client;
 			autoClose: false, 
 			deviceSyncTimeout: false,
 			browserArgs: ['--disable-extensions'],
-			whatsappVersion: '2.3000.1013232587-alpha',
+			whatsappVersion: '2.3000.1014090025-alpha',
 		});
 
 		client.page.on('close', () => {
