@@ -64,6 +64,8 @@ Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 | | | `%pedido_horario%` - Horário em que o pedido foi feito (hh:mm) |
 | | | `%pedido_n%` - Número do pedido |
 | | | `%restaurante%` - Nome do restaurante parceiro |
+| | | `%cidade%` - Nome da cidade em que o pedido foi feito |
+| | | `%uf%` - Nome do estado em que o pedido foi feito |
 | | | `%fominha%` - Nome completo do fominha |
 | | | `%fominha_n_pedidos%` - Nº de pedidos do fominha |
 

@@ -334,6 +334,8 @@ const setCustomMessage = (msg, order) => {
         '%pedido_horario%':     orderTime,
         '%pedido_n%':           order.id,
         '%restaurante%':        order.restaurante.nome,
+        '%cidade%':             order.restaurante.cidade.nome,
+        '%uf%':                 order.restaurante.cidade.estado.uf,
         '%fominha%':            order.usuario.nome_completo,
         '%fominha_n_pedidos%':  order.usuario.quantidade_pedidos,
         '%score%':              order.score,
