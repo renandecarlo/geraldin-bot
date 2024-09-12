@@ -24,6 +24,7 @@ const config = {
     headless:                       process.env.MOSTRAR_NAVEGADOR_GERALDO == '1' ? false : 'new',
     headlessWhatsapp:               process.env.MOSTRAR_NAVEGADOR_WHATSAPP == '1' ? false : 'new',
     message:                        process.env.MENSAGEM || 'Olá parceiro, você tem um novo pedido (#%pedido_n%) esperando há *%tempo_esperando% minutos*! 🚀',
+    testPhoneNumber:                process.env.TEST_PHONE || null,
 	
     /* whatsapp-bot.js */
     sendToEveryone:		            process.env.ENVIA_MSG_TODOS_NUMEROS == '1' ? true : false,

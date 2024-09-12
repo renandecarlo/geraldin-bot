@@ -347,6 +347,50 @@ const setCustomMessage = (msg, order) => {
     return msg;
 }
 
+/* Simulate an order */
+const simulateOrder = () => {
+    /* Wait for WhatsApp to be connected */
+    if(!wpp.isConnected())
+        return setTimeout(simulateOrder, 1000);
+
+    const order = {
+        id: '000000001',
+        status: 1,
+        created: new Date(new Date - (10 * 60 * 1000)), /* 10 minutes ago */
+        visualizado: 0,
+        formas_pagamento_id: 258, /* FORMA_PAGAMENTO_ONLINE_CREDITO */
+        usuario: {
+            id: '123456789',
+            nome_completo: 'Jane Doe',
+            email: 'jane.doe@example.com',
+            celular: '(11) 99999-9999',
+            quantidade_pedidos: 5,
+            numero_verificado: true,
+            browser_infos: {
+                ip: '192.168.1.1',
+            },
+            created: new Date(new Date - (5 * 60 * 60 * 24 * 1000)), /* 5 days ago */
+        },
+        restaurante: {
+            id: '987654321',
+            nome: 'Restaurante Mock',
+            celulares: config.testPhoneNumber,
+            telefones_celulares: config.testPhoneNumber,
+            telefones: config.testPhoneNumber,
+            cidade: {
+                nome: 'São Paulo',
+                estado: {
+                    uf: 'SP',
+                }
+            }
+        }
+    };
+
+    console.log(chalk.yellow.inverse('-> Simulando um pedido de teste...'));
+
+    return parseOrders([ order ]);
+}
+
 let page;
 let watchdog;
 (async () => {
@@ -410,6 +454,10 @@ let watchdog;
 
             interceptOrdersSocket(); /* Intercept orders from socket in real time */
         }
+
+        /* Simulate order if asked */
+        if(process.argv.includes('run-test'))
+            simulateOrder();
     } catch (e) {
         console.err(chalk.bgRedBright('-> Erro', e));
     }
