@@ -48,7 +48,7 @@
   "scripts": {
     "start": "node .",
     "test": "node . run-test",
-    "prebuild": "rm -rf ../dist && rm -rf ../geraldin-bot.v%npm_package_version%.zip && rm -rf node_modules/ && npm install && npm run prebuild-linux",
+    "prebuild": "rm -rf ../dist && rm -rf ../geraldin-bot.v%npm_package_version%.zip && rm -rf node_modules/ && npm install",
     "prebuild-linux": "npm install --cpu=x64 --os=linux --libc=glibc sharp",
     "build": "pkg . -C brotli",
     "postbuild": "cp package.json LICENSE .env.ini.example README.md ../dist && mv ../dist/.env.ini.example ../dist/.env.ini && npm run zip",
