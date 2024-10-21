@@ -15,7 +15,7 @@ const encryptedConfig = {
 };
 
 const setPassword = async () => {
-    const prompt = 
+    await keytar.deletePassword(package.name, config.user); /* Delete any remaining password */
         chalk.redBright(`Senha não encontrada! Configure sua senha.\n`) +
         chalk.bgRed.whiteBright(`Nota: Sua senha será criptografada e armazenada de forma segura para futuros acessos.\n` +
         `Caso deseje redefinir a senha, basta deixar o campo "SENHA" em branco no arquivo de configuração.\n\n`) +
