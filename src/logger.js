@@ -1,7 +1,5 @@
-const dotenv = require('dotenv');
 const moment = require('moment');
 const util = require('util');
-const path = require('path');
 const package = require('../package.json');
 
 const config = require('./config');
