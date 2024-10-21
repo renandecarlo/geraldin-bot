@@ -61,7 +61,7 @@ const decryptPassword = (encrypted, key) => {
 /* Set password as encrypted in config file */
 const setEnvPassword = () => {
     /* Path to .env.ini file */
-    const envFilePath = path.resolve(__dirname, '../.env.ini');
+    const envFilePath = path.resolve('./.env.ini');
     const envContent = fs.readFileSync(envFilePath, 'utf8');
 
     /* Check if the password config exists in the config file */
