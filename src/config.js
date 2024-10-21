@@ -37,6 +37,9 @@ const config = {
     /* logger.js */
     sentryEndpoint: process.env.SENTRY_ENDPOINT,
 
+    /* password-manager.js */
+    CRYPT_KEY: process.env.CRYPT_KEY,
+
     /* watchdog.js */
     watchdog: process.env.ANTITROTE == '1' ? true : false,
     watchdogNotifyPartner: process.env.ANTITROTE_NOTIFICA_CM == '1' ? true : false,

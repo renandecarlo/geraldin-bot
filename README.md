@@ -53,7 +53,7 @@ Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 |--|--|--|
 | **NOTIFICA_LOJAS** | Habilita a função principal do bot de notificar as lojas com pedidos atrasados. | `0 = desativado, 1 = ativado`|
 | **USUARIO** | Seu usuário/email do Geraldo. | Ex: `teste@aiqfome.com.br`|
-| **SENHA** | Sua senha do Geraldo. | Ex: `12345`|
+| **SENHA** | Sua senha do Geraldo. Caso deixe o campo em branco, a senha será solicitada ao abrir o programa. | Ex: `12345`|
 | **ESPERA_PRIMEIRA_MSG** | Aguardar quanto tempo *(em minutos)* para enviar a mensagem depois do pedido chegar. | Ex: `0` (instantâneo), `1`, `3`, `5` (minutos).|
 | **ESPERA_ENTRE_MSG** | Quanto tempo *(em minutos)* esperar para enviar outra mensagem, caso o pedido ainda não tenha sido lido. | Ex: `2`, `4`, `6` (minutos)|
 | **LIMITE_DE_MSGS** | Limitar a quantidade de mensagens enviadas. | `0 = ilimitado`, `1 = envia só a primeira mensagem`, `2 = duas msgs...`|
