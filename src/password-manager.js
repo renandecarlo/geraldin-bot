@@ -16,13 +16,19 @@ const encryptedConfig = {
 
 const setPassword = async () => {
     await keytar.deletePassword(package.name, config.user); /* Delete any remaining password */
+
+    const firstPrompt = 
         chalk.redBright(`Senha não encontrada! Configure sua senha.\n`) +
         chalk.bgRed.whiteBright(`Nota: Sua senha será criptografada e armazenada de forma segura para futuros acessos.\n` +
-        `Caso deseje redefinir a senha, basta deixar o campo "SENHA" em branco no arquivo de configuração.\n\n`) +
+        `Caso deseje redefinir a senha, basta deixar o campo "SENHA" em branco no arquivo de configuração.\n\n`);
+
+    const secondPrompt =
         `Por favor, insira sua senha do Geraldo e pressione <Enter> para confirmar:`;
 
-    const password = readline.question(prompt);
-    console.log(''); /* Empty line after prompt */
+    /* Clear the line and prevent password being visible */
+    process.stdout.moveCursor(0, -1); /* Move cursor up one line */
+    process.stdout.clearLine();
+    console.log(`${secondPrompt}OK!\n`);
 
     if(password) {
 
