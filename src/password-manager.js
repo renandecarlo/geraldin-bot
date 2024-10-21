@@ -111,14 +111,14 @@ const passwordManager = async () => {
 
         try {
             config.password = decryptPassword(encryptedPassword, config.CRYPT_KEY);
-
-            return true;
         } catch(e) {
             console.err(chalk.bgRedBright('-> Não foi possível descriptografar a senha.'));
 
             return await setPassword();
         }
     }
+
+    return true;
 }
 
 module.exports = passwordManager;
