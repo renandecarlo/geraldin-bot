@@ -20,7 +20,7 @@ O bot, de forma autônoma, entra no painel Geraldo e fica monitorando os novos p
 ## Instalação
 > Requisitos: é necessário ter o [Google Chrome](https://www.google.com/intl/pt-BR/chrome/) instalado para o programa funcionar.
 
-### Modo fácil
+### Como usar
 Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 
 1. [Clique aqui](https://github.com/renandecarlo/geraldin-bot/releases/latest) para fazer o download do programa e descompacte o arquivo.
@@ -28,17 +28,6 @@ Veja o video explicativo aqui: https://youtu.be/LBcj_rPX6dU
 3. Inicie o programa abrindo o arquivo `geraldin-bot.exe`
 4. Leia o QRCode pelo WhatsApp (no celular) indo em Menu > Aparelhos conectados > Conectar um aparelho
 5. Pronto!
-
-### Modo difícil (para desenvolvedores)
-1. Instale o [NodeJS](https://nodejs.dev/)
-2. Clone este repositório ou faça o download da pasta [clicando aqui](https://github.com/renandecarlo/geraldin-bot/archive/refs/heads/main.zip)
-3. Extraia o arquivo se necessário e abra o cmd/console na pasta que você acabou de baixar
-4. Rode o comando: `npm install`
-5. Renomeie o arquivo `.env.ini.example` para `.env.ini`
-6. Abra o arquivo `.env.ini` no Bloco de Notas ou WordPad e altere as configurações necessárias
-7. Inicie o programa com o comando: `npm start`
-8. Leia o QRCode pelo WhatsApp (no celular) indo em Menu > Aparelhos conectados > Conectar um aparelho
-9. Pronto!
 
 ## Configurações
 | config | descrição | opções |
