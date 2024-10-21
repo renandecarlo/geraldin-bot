@@ -1,5 +1,5 @@
 const keytar = require('keytar');
-const readline = require('readline-sync');
+const readline = require('readline');
 const chalk = require('chalk');
 const crypto = require('crypto');
 const Sentry = require('@sentry/node');
@@ -14,6 +14,21 @@ const encryptedConfig = {
     passwordEnvKey: 'SENHA',
 };
 
+/* Promisify the readline prompt */
+const passwordPrompt = question => {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    return new Promise(resolve => {
+        rl.question(question, answer => {
+            rl.close();
+            return resolve(answer);
+        });
+    });
+};
+
 const setPassword = async () => {
     await keytar.deletePassword(package.name, config.user); /* Delete any remaining password */
 
@@ -24,6 +39,8 @@ const setPassword = async () => {
 
     const secondPrompt =
         `Por favor, insira sua senha do Geraldo e pressione <Enter> para confirmar:`;
+
+    const password = await passwordPrompt(firstPrompt + secondPrompt);
 
     /* Clear the line and prevent password being visible */
     process.stdout.moveCursor(0, -1); /* Move cursor up one line */
@@ -99,7 +116,7 @@ const passwordManager = async () => {
         } catch(e) {
             console.err(chalk.bgRedBright('-> Não foi possível descriptografar a senha.'));
 
-            return setPassword();
+            return await setPassword();
         }
     }
 }
