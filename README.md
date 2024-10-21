@@ -8,11 +8,9 @@
   <br /><br />
   <img src="https://user-images.githubusercontent.com/6974980/127627282-7f157406-0bce-4d3c-ae96-c0b8795467ed.png" /><br />
   <h1>Geraldin Bot</h1>
- </div>
+</div>
  
- Este bot foi desenvolvido para automatizar o envio de mensagens através do WhatsApp para parceiros Aiqfome.
- > Atenção: este programa está em fase de testes, use com cautela.
-
+Este bot foi desenvolvido para automatizar o envio de mensagens através do WhatsApp para parceiros Aiqfome.
 <br />
 
 
