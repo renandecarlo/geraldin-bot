@@ -17,12 +17,6 @@ Este bot foi desenvolvido para automatizar o envio de mensagens através do What
 ## Como funciona
 O bot, de forma autônoma, entra no painel Geraldo e fica monitorando os novos pedidos. Caso um pedido não tenha sido visualizado por um determinado tempo pelo parceiro, o bot envia uma mensagem através do WhatsApp Web.
 
-## Saiba que
-
-Você não poderá usar o WhatsApp Web em outro lugar (com o mesmo número) enquanto o bot está aberto. Caso isso seja um problema, o uso de um número de telefone específico para o bot é recomendado.
-
-O WhatsApp Web só funciona em conjunto com o WhatsApp no celular, então você precisará manter o computador e o celular conectados na internet.
-
 ## Instalação
 > Requisitos: é necessário ter o [Google Chrome](https://www.google.com/intl/pt-BR/chrome/) instalado para o programa funcionar.
 
