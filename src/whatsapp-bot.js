@@ -19,7 +19,7 @@ const handleSession = (statusSession, session) => {
 
 	/* Handle session connected */
 	if(statusSession == 'inChat')
-		inChat = true;
+		setTimeout(() => inChat = true, 10 * 1000); /* Avoid sending messages too soon */
 
 	/* Handle browser exit */
 	if(statusSession == 'browserClose') {
@@ -177,6 +177,7 @@ let client;
 			autoClose: false, 
 			deviceSyncTimeout: false,
 			browserArgs: ['--disable-extensions'],
+			waitForLogin: true,
 			// whatsappVersion: null
 		});
 
