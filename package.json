@@ -1,56 +1,56 @@
 {
-  "name": "geraldin-bot",
-  "version": "5.0.1",
-  "description": "Bot para sinalizar parceiros por WhatsApp quando recebem pedido no Geraldo <aiqfome>",
-  "bin": "src/main.js",
-  "main": "src/main.js",
-  "author": "Renan D.",
-  "license": "MIT",
-  "dependencies": {
-    "@sentry/node": "^8.47.0",
-    "@wppconnect-team/wppconnect": "^1.35.2",
-    "async-retry": "^1.3.3",
-    "chalk": "4.1.2",
-    "chrome-launcher": "0.15.2",
-    "deep-email-validator": "^0.1.21",
-    "dotenv": "14.3.2",
-    "gravatar": "^1.8.2",
-    "keytar": "^7.9.0",
-    "luxon": "^3.5.0",
-    "moment": "^2.30.1",
-    "node-fetch": "2.6.7",
-    "npm-run-all": "^4.1.5",
-    "ora": "5.4.1",
-    "puppeteer-core": "^23.11.1",
-    "semver": "^7.6.3",
-    "sharp": "^0.33.5",
-    "sprintf-js": "^1.1.3",
-    "winston": "^3.17.0"
-  },
-  "overrides": {
-    "chrome-launcher": "0.15.2",
-    "chalk": "4.1.2",
-    "dotenv": "14.3.2",
-    "node-fetch": "2.6.7",
-    "ora": "5.4.1"
-  },
-  "pkg": {
-    "assets": [
-      "node_modules/**/*.*",
-      ".env.build"
-    ],
-    "targets": [
-      "node18-win"
-    ],
-    "outputPath": "../dist"
-  },
-  "scripts": {
-    "start": "node .",
-    "test": "node . run-test",
-    "prebuild": "rm -rf ../dist && rm -rf ../geraldin-bot.v%npm_package_version%.zip && rm -rf node_modules/ && npm install",
-    "prebuild-linux": "npm install --cpu=x64 --os=linux --libc=glibc sharp",
-    "build": "pkg . -C brotli",
-    "postbuild": "cp package.json LICENSE .env.ini.example README.md ../dist && mv ../dist/.env.ini.example ../dist/.env.ini && npm run zip",
-    "zip": "powershell Compress-Archive ../dist/* ../geraldin-bot.v%npm_package_version%.zip"
-  }
+    "name": "geraldin-bot",
+    "version": "5.0.2",
+    "description": "Bot para sinalizar parceiros por WhatsApp quando recebem pedido no Geraldo <aiqfome>",
+    "bin": "src/main.js",
+    "main": "src/main.js",
+    "author": "Renan D.",
+    "license": "MIT",
+    "dependencies": {
+        "@sentry/node": "^8.47.0",
+        "@wppconnect-team/wppconnect": "^1.35.2",
+        "async-retry": "^1.3.3",
+        "chalk": "4.1.2",
+        "chrome-launcher": "0.15.2",
+        "deep-email-validator": "^0.1.21",
+        "dotenv": "14.3.2",
+        "gravatar": "^1.8.2",
+        "keytar": "^7.9.0",
+        "luxon": "^3.5.0",
+        "moment": "^2.30.1",
+        "node-fetch": "2.6.7",
+        "npm-run-all": "^4.1.5",
+        "ora": "5.4.1",
+        "puppeteer-core": "^23.11.1",
+        "semver": "^7.6.3",
+        "sharp": "^0.33.5",
+        "sprintf-js": "^1.1.3",
+        "winston": "^3.17.0"
+    },
+    "overrides": {
+        "chrome-launcher": "0.15.2",
+        "chalk": "4.1.2",
+        "dotenv": "14.3.2",
+        "node-fetch": "2.6.7",
+        "ora": "5.4.1"
+    },
+    "pkg": {
+        "assets": [
+            "node_modules/**/*.*",
+            ".env.build"
+        ],
+        "targets": [
+            "node18-win"
+        ],
+        "outputPath": "../dist"
+    },
+    "scripts": {
+        "start": "node .",
+        "test": "node . run-test",
+        "prebuild": "rm -rf ../dist && rm -rf ../geraldin-bot.v%npm_package_version%.zip && rm -rf node_modules/ && npm install",
+        "prebuild-linux": "npm install --cpu=x64 --os=linux --libc=glibc sharp",
+        "build": "pkg . -C brotli",
+        "postbuild": "cp package.json LICENSE .env.ini.example README.md ../dist && mv ../dist/.env.ini.example ../dist/.env.ini && npm run zip",
+        "zip": "powershell Compress-Archive ../dist/* ../geraldin-bot.v%npm_package_version%.zip"
+    }
 }
