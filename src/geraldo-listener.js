@@ -60,8 +60,14 @@ const login = async () => {
 
         await page.waitForNavigation();
 
-        if(!await page.$('.user-header-detail'))
+        if(!await page.$('.user-header-detail')) {
+            console.log(
+                chalk.redBright('-> Não foi possível fazer o login. ') + 
+                chalk.bgRedBright('Verifique se o seu usuário e senha estão corretos no arquivo .env.ini.')
+            );
+
             return false;
+        }
     } catch (e) {
         console.log(chalk.redBright('-> Não foi possível fazer o login.'), e);
     }
@@ -429,8 +435,18 @@ let watchdog;
      */
 
     try {
-        /* Check if logged in */
+        /* Try to login */
         await login();
+
+        /* Simulate order if asked */
+        if(process.argv.includes('run-test'))
+            simulateOrder();
+
+        /* If can't login, try again every 10 seconds */
+        while(!await isLoggedIn()) {
+            await new Promise(resolve => setTimeout(resolve, 30000)); /* Sleep for 30 seconds if can't login */
+            await login();
+        }
 
         /* Intercept and parse orders */
         interceptOrdersRefresh();
@@ -454,10 +470,6 @@ let watchdog;
 
             interceptOrdersSocket(); /* Intercept orders from socket in real time */
         }
-
-        /* Simulate order if asked */
-        if(process.argv.includes('run-test'))
-            simulateOrder();
     } catch (e) {
         console.err(chalk.bgRedBright('-> Erro', e));
     }
