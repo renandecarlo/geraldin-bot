@@ -32,7 +32,9 @@
         "chalk": "4.1.2",
         "dotenv": "14.3.2",
         "node-fetch": "2.6.7",
-        "ora": "5.4.1"
+        "ora": "5.4.1",
+        "@wppconnect/wa-js": "^3.16.5",
+        "@wppconnect/wa-version": "^1.5.1120"
     },
     "pkg": {
         "assets": [
