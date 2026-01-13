@@ -1,6 +1,6 @@
 {
   "name": "geraldin-bot",
-  "version": "5.0.10",
+  "version": "5.0.11",
   "description": "Bot para sinalizar parceiros por WhatsApp quando recebem pedido no Geraldo <aiqfome>",
   "bin": "src/main.js",
   "main": "src/main.js",
