@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "@sentry/node": "9.12.0",
-    "@wppconnect-team/wppconnect": "^1.40.0",
+    "@wppconnect-team/wppconnect": "^1.41.1",
     "async-retry": "^1.3.3",
     "chalk": "4.1.2",
     "chrome-launcher": "0.15.2",
@@ -21,8 +21,8 @@
     "node-fetch": "2.6.7",
     "npm-run-all": "^4.1.5",
     "ora": "5.4.1",
-    "puppeteer-core": "^24.36.0",
-    "semver": "^7.7.3",
+    "puppeteer-core": "^24.37.5",
+    "semver": "^7.7.4",
     "sharp": "^0.33.5",
     "sprintf-js": "^1.1.3",
     "winston": "^3.19.0"
@@ -34,8 +34,8 @@
     "node-fetch": "2.6.7",
     "ora": "5.4.1",
     "@sentry/node": "9.12.0",
-    "@wppconnect/wa-js": "^3.22.0",
-    "@wppconnect/wa-version": "^1.5.3346"
+    "@wppconnect/wa-js": "^3.23.2",
+    "@wppconnect/wa-version": "^1.5.3483"
   },
   "pkg": {
     "assets": [
