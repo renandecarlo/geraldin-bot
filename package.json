@@ -34,8 +34,8 @@
     "node-fetch": "2.6.7",
     "ora": "5.4.1",
     "@sentry/node": "9.12.0",
-    "@wppconnect/wa-js": "4.3.0",
-    "@wppconnect/wa-version": "1.5.3941"
+    "@wppconnect/wa-js": "4.3.1",
+    "@wppconnect/wa-version": "1.5.4262"
   },
   "pkg": {
     "assets": [
