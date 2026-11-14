@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const Sentry = require("@sentry/node");
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const ChromeLauncher = require('chrome-launcher');
 
 const config = require('./config');
