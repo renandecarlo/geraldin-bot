@@ -178,7 +178,7 @@ let client;
 			deviceSyncTimeout: false,
 			browserArgs: ['--disable-extensions'],
 			waitForLogin: true,
-			// whatsappVersion: '2.3000.10389x'
+			whatsappVersion: '2.3000.1054603161-alpha',
 		});
 
 		client.page.on('close', () => {
